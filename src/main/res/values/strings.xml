@@ -3,4 +3,6 @@
 
     <string name="app_name" translatable="false">Watcher</string>
 
+    <string name="text_version_note" formatted="true">Version %s [pre-α]</string>
+
 </resources>

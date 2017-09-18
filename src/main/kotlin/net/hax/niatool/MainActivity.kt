@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
             // but start/stopService never start or stop the service twice, so we are OK
             if (isChecked) startOverlay() else stopOverlay()
         }
+
+        // Version note configuration
+        (findViewById(R.id.version_note) as TextView).text =
+                getString(R.string.text_version_note, packageManager.getPackageInfo(packageName, 0).versionName)
     }
 
     private fun startOverlay() {
