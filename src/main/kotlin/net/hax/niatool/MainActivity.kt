@@ -1,5 +1,6 @@
 package net.hax.niatool
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SwitchCompat
@@ -22,9 +23,20 @@ class MainActivity : AppCompatActivity() {
         // Service toggle switch configuration
         mServiceToggleSwitch = findViewById(R.id.switch_service_toggle) as SwitchCompat
         mServiceToggleSwitch.setOnCheckedChangeListener { _, isChecked ->
-            // TODO: actually create a service
-            Log.i(TAG, "Thins thing changed? Outstanding!")
+            // Note: this gets invoked even when we toggle the switch programmatically,
+            // but start/stopService never start or stop the service twice, so we are OK
+            if (isChecked) startOverlay() else stopOverlay()
         }
+    }
+
+    private fun startOverlay() {
+        Log.d(TAG, "Starting overlay service")
+        startService(Intent(this, OverlayService::class.java))
+    }
+
+    private fun stopOverlay() {
+        Log.d(TAG, "Stopping overlay service")
+        stopService(Intent(this, OverlayService::class.java))
     }
 
 }
