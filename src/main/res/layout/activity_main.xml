@@ -11,6 +11,14 @@
             android:minHeight="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="?android:attr/toolbarStyle"/>
+            style="?android:attr/toolbarStyle">
+
+        <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_service_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"/>
+
+    </android.support.v7.widget.Toolbar>
 
 </LinearLayout>
