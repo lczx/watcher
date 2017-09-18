@@ -19,7 +19,14 @@ class StatusPanelOverlay(context: Context) {
 
     val viewport: View = StatusView(context)
 
-    class StatusView(context: Context) : View(context) {
+    var armed = false
+        set(value) {
+            if (field == value) return
+            field = value
+            viewport.postInvalidate() // Like invalidate, but thread-safe; no harm if called from strange services
+        }
+
+    inner class StatusView(context: Context) : View(context) {
 
         // We want to use dp instead of sp also for the text
         // and ignore system font size because the status bar is always the same height
@@ -48,12 +55,13 @@ class StatusPanelOverlay(context: Context) {
 
         init {
             setWillNotDraw(false)
+            setOnClickListener { armed = !armed }
         }
 
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             canvas.drawPath(mBgPath, mBgPaint)
-            canvas.drawText("\uD83E\uDD18 READY",
+            canvas.drawText(if (armed) "⚡ ARMED" else "\uD83E\uDD18 READY",
                     SIZE_BACKGROUND_INNER_WIDTH_DIP * dp / 2 + mStatusBarHeight,
                     SIZE_TEXT_LOCATION_Y_DIP * dp, mTextPaint)
         }
