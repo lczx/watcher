@@ -11,6 +11,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply from: 'gradle/scripts/versioning.gradle'
 
 repositories {
     jcenter()
@@ -23,8 +24,8 @@ android {
         applicationId 'net.hax.niatool'
         minSdkVersion 21        // Lollipop 5.0
         targetSdkVersion 25     // Nougat 7.1
-        versionCode 0
-        versionName '0.0.0'
+        versionCode gitVersion.code
+        versionName gitVersion.name
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {

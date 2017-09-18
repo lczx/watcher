@@ -1,0 +1,72 @@
+@SuppressWarnings("GroovyAssignabilityCheck,GroovyUnusedDeclaration")
+class GitVersionTool {
+
+    private static final CMD_GIT_DESCRIBE = 'git describe --long'
+    private static final CMD_GIT_FETCH_BRANCH = 'git rev-parse --abbrev-ref HEAD'
+    private static final CMD_GIT_IS_DIRTY = 'git diff-index --quiet HEAD'
+
+    private static final HIDDEN_BRANCHES = ['master']
+    private static final VERSION_REGEX = /^v?(\d+)\.(\d+)(?:\.(\d+))?(.*)?(?=-(\d+)-g([A-Fa-f\d]{7})$)-\5-g\6$/
+    // This Regex for dummies...           \--------- (1) ----------/\------------- (2) -------------/\ (3) /
+    //   (1) Captures major, minor and (optional) patch version, prefixed by optional 'v' character (i.e. v1.0.3)
+    //   (2) Captures anything before { "-[numbers]-g[7 hex digits] } (forward lookahead),
+    //       catches also these numbers and 7 hex digits.
+    //   (3) Includes in the match the forward lookahead in part (2), "\5" means loosely "the 5th captured thing"
+    //
+    // Example: in "1.0.3c-rc2-7-gdeadbee" we get [1, 0, 3, c-rc2, 7, deadbee]
+
+    @Lazy
+    private VersionData data = {
+        def description = CMD_GIT_DESCRIBE.execute().text.trim()
+        description.isEmpty() ? null : new VersionData(
+                description,
+                CMD_GIT_FETCH_BRANCH.execute().text.trim(),
+                CMD_GIT_IS_DIRTY.execute().waitFor() != 0)
+    }()
+
+    String getName() {
+        if (data == null) return 'unknown'
+
+        def sb = StringBuilder.newInstance() << data.ver.join('.') << data.verExtra
+        if (data.rev != 0)
+            sb << "-$data.rev-$data.hash"
+        if (!HIDDEN_BRANCHES.contains(data.branch))
+            sb << "-$data.branch"
+        if (data.dirty)
+            sb << '-dirty'
+        sb.toString()
+    }
+
+    int getCode() {
+        data == null ? 0 : (100**3 * data.ver[0] + 100**2 * data.ver[1] + 100 * data.ver[2] + data.rev)
+    }
+
+    class VersionData {
+
+        int[] ver
+        String verExtra
+        int rev
+        String hash
+        String branch
+        boolean dirty
+
+        VersionData(String gitDescription, String branch, boolean isDirty) {
+            def _dm = (gitDescription =~ VERSION_REGEX)[0]
+            this.ver = _dm[1..3].collect { it == null ? 0 : Integer.valueOf(it) }    // Ver. [MAJOR, MINOR, PATCH]
+            this.verExtra = _dm[4]                 // Extra string after semantic version
+            this.rev = Integer.valueOf(_dm[5])     // Commits after latest tag
+            this.hash = _dm[6]                     // Commit hash
+            this.branch = branch
+            this.dirty = isDirty
+        }
+
+    }
+
+}
+
+ext.gitVersion = new GitVersionTool()
+
+task gitVersion << {
+    println "code:\t${gitVersion.code}"
+    println "name:\t${gitVersion.name}"
+}
