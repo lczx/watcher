@@ -5,13 +5,16 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
+import net.hax.niatool.R
 
-class ImageOverlay(context: Context) {
+class ImageOverlay(private val context: Context) {
 
     companion object {
         private val TAG = "ImageOverlay"
     }
 
+    private val indexToast = Toast.makeText(context, null, Toast.LENGTH_SHORT)
     private val mImageList = mutableListOf<Bitmap>()
     private var mImageIndex = 0 // Better use this than an Iterator, also Kotlin has only ArrayLists
 
@@ -44,12 +47,14 @@ class ImageOverlay(context: Context) {
     fun previousImage() {
         if (mImageIndex > 0) {
             viewport.setImageBitmap(mImageList[--mImageIndex])
+            showIndexToast()
         }
     }
 
     fun nextImage() {
         if (mImageIndex < mImageList.size - 1) {
             viewport.setImageBitmap(mImageList[++mImageIndex])
+            showIndexToast()
         }
     }
 
@@ -58,6 +63,12 @@ class ImageOverlay(context: Context) {
         for (image in mImageList) image.recycle()
         Log.d(TAG, "Image collection cleared and bitmaps recycled (${mImageList.size} elements)")
         mImageList.clear()
+    }
+
+    private fun showIndexToast() {
+        val indexMessage = context.getString(R.string.toast_shot_browse, mImageIndex + 1, mImageList.size)
+        indexToast.setText(indexMessage)
+        indexToast.show()
     }
 
 }
