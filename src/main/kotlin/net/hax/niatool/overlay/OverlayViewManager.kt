@@ -128,3 +128,38 @@ class OverlayViewManager(private val context: Context) {
     }
 
 }
+
+/* --- HOORAY A BEAUTIFUL END OF PAGE MEGA-BLOCK-COMMENT, MUCH BEAUTIFUL, VERY POLISHED! ---
+ * ---    FOR REFERENCE, HERE WE HAVE SOME CODE FOR A VIEW THAT CAN BE DRAGGED AROUND    ---
+
+class MovableView(context: Context, private val windowManager: WindowManager) : View(context) {
+
+    private val mTimeMoveThreshold = ViewConfiguration.getLongPressTimeout()
+    private var _xDelta: Int = 0
+    private var _yDelta: Int = 0
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val x = event.rawX.toInt()
+        val y = event.rawY.toInt()
+        val lParams = layoutParams as WindowManager.LayoutParams
+
+        when (event.action and MotionEvent.ACTION_MASK) {
+            MotionEvent.ACTION_DOWN -> {
+                _xDelta = x - lParams.x
+                _yDelta = y - lParams.y
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (event.eventTime - event.downTime > mTimeMoveThreshold) {
+                    lParams.x = x - _xDelta
+                    lParams.y = y - _yDelta
+                    windowManager.updateViewLayout(this, lParams)
+                    invalidate()
+                }
+            }
+        }
+        return true
+    }
+
+}
+
+*/
