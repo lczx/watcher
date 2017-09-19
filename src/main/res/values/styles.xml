@@ -21,6 +21,12 @@
         <!--<item name="android:colorControlNormal">#f00</item>-->
     </style>
 
+    <style name="AppTheme.MainActivity.Launcher">
+        <!-- colorBackground already set parent theme, we don't set colorPrimary to avoid changing task color  -->
+        <item name="android:colorForeground">@color/main_activity_color_etched</item>
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
     <style name="Widget.App.Toolbar.MainActivity">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:theme">@style/ThemeOverlay.App.Toolbar.MainActivity</item>
