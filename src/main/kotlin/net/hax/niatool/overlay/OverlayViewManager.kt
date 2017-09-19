@@ -11,6 +11,7 @@ import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.R
 
@@ -71,6 +72,7 @@ class OverlayViewManager(private val context: Context) {
     }
 
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT)
     private var statusOverlay: StatusPanelOverlay? = null
     private var controlOverlay: ControlPanelOverlay? = null
     private var imageOverlay: ImageOverlay? = null
@@ -109,6 +111,8 @@ class OverlayViewManager(private val context: Context) {
 
     fun onImageAvailable(bitmap: Bitmap) {
         imageOverlay!!.addImage(bitmap)
+        shotToast.setText(context.getString(R.string.toast_shot_taken, imageOverlay!!.imageCount))
+        shotToast.show()
     }
 
     class ArmedStatusListener : StatusPanelOverlay.OnArmedStatusListener {
