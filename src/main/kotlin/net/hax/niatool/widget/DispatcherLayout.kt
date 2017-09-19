@@ -42,6 +42,7 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
 
     private val mDensity = resources.displayMetrics.density
     private val mRegions: List<Region>
+    private var mCurrentGestureViewIdx: Int = -1
 
     init {
         if (attrs == null)
@@ -83,6 +84,15 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
         val posX = (ev.x / mDensity).toInt()
         val posY = (ev.y / mDensity).toInt()
 
+        // If we had a gesture going on and we exited its region, we cancel the gesture
+        if (mCurrentGestureViewIdx != -1 && !mRegions[mCurrentGestureViewIdx].contains(posX, posY)) {
+            val prevAction = ev.action
+            ev.action = MotionEvent.ACTION_CANCEL
+            getChildAt(mCurrentGestureViewIdx).dispatchTouchEvent(ev)
+            ev.action = prevAction
+            mCurrentGestureViewIdx = -1
+        }
+
         // Find the first region containing the event point - if we have no region, return
         val idx = mRegions.indexOfFirst { it.contains(posX, posY) }
         if (idx == -1) {
@@ -97,6 +107,7 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
         }
 
         // Adjust event offsets for the child view and dispatch
+        mCurrentGestureViewIdx = idx
         val view = getChildAt(idx)
         val offsetX = (scrollX - view.left).toFloat()
         val offsetY = (scrollY - view.top).toFloat()
