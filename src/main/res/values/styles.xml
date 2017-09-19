@@ -12,26 +12,47 @@
 
     <style name="Widget.App.Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
-        <item name="android:theme">@style/ThemeOverlay.App.Toolbar</item>
     </style>
 
-    <style name="ThemeOverlay.App.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:titleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Title</item>
+    <!-- MainActivity specific (preserving color[Primary,PrimaryDark,Accent] -->
+    <style name="AppTheme.MainActivity">
+        <item name="android:statusBarColor">@color/main_activity_color_status_bar</item>
+        <item name="android:toolbarStyle">@style/Widget.App.Toolbar.MainActivity</item>
+        <!--<item name="android:colorControlNormal">#f00</item>-->
     </style>
 
-    <style name="TextAppearance.Widget.App.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <style name="Widget.App.Toolbar.MainActivity">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:theme">@style/ThemeOverlay.App.Toolbar.MainActivity</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar.MainActivity" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- Parent should set also colorControlNormal = textColorPrimary -->
+        <item name="android:textColorPrimary">@color/main_activity_color_etched</item>
+
+        <!-- Switch colors -->
+        <item name="colorSwitchThumbNormal">?android:attr/colorControlNormal</item>
+        <item name="android:colorForeground">?android:attr/colorControlNormal</item>
+
+        <!-- Title style -->
+        <item name="android:titleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.MainActivity.Title</item>
+    </style>
+
+    <style name="TextAppearance.Widget.App.Toolbar.MainActivity.Title"
+           parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:letterSpacing">0.1</item>
         <item name="localFontFamily">Gravedigger</item>
     </style>
 
+
     <!-- For CaptureRequestActivity -->
     <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
-        <!-- Equivalent of theme with parent "android:Theme.Translucent.NoTitleBar'
-             with 'WindowIsFloating' and 'backgroundDimEnabled' -->
+        <!-- Equivalent of theme with parent "android:Theme.Translucent.NoTitleBar"
+             with "windowIsFloating" and "backgroundDimEnabled" -->
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <!--<item name="android:backgroundDimEnabled">false</item>-->
     </style>
