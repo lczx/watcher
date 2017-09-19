@@ -13,6 +13,7 @@ import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +31,9 @@ class MainActivity : AppCompatActivity() {
 
         // Service toggle switch configuration
         mServiceToggleSwitch = findViewById(R.id.switch_service_toggle) as SwitchCompat
+        mServiceToggleSwitch.setOnLongClickListener {
+            Toast.makeText(this, R.string.toast_service_toggle, Toast.LENGTH_SHORT).show(); true
+        }
         mServiceToggleSwitch.setOnCheckedChangeListener { _, isChecked ->
             // Note: this gets invoked even when we toggle the switch programmatically,
             // but start/stopService never start or stop the service twice, so we are OK
