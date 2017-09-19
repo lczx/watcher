@@ -2,6 +2,11 @@ package net.hax.niatool
 
 import android.app.Service
 import android.content.Intent
+import android.graphics.PixelFormat
+import android.graphics.Point
+import android.hardware.display.DisplayManager
+import android.hardware.display.VirtualDisplay
+import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.os.Handler
 import android.os.IBinder
@@ -48,6 +53,8 @@ class OverlayService : Service() {
 
     private var overlayManager: OverlayViewManager? = null
     private var mediaProjection: MediaProjection? = null
+    private var virtualDisplay: VirtualDisplay? = null
+    private var imageReader: ImageReader? = null
 
     override fun onBind(intent: Intent?): IBinder {
         throw UnsupportedOperationException("This service does not support binding")
@@ -80,6 +87,10 @@ class OverlayService : Service() {
         }
         overlayManager!!.onProjectionStop()
 
+        virtualDisplay!!.release()
+        virtualDisplay = null
+        imageReader!!.close()
+        imageReader = null
         mediaProjection!!.stop()
         mediaProjection = null
     }
@@ -91,6 +102,14 @@ class OverlayService : Service() {
         } else {
             Log.d(TAG, "Permission granted, initializing MediaProjection")
             this.mediaProjection = mediaProjection
+            // TODO: NOT ORIENTATION SAFE, we should reinitialize imageReader & co on orientation change
+            val screenSize = Point()
+            overlayManager!!.windowManager.defaultDisplay.getSize(screenSize) // getWindowManager() in Activity
+            imageReader = ImageReader.newInstance(screenSize.x, screenSize.y, PixelFormat.RGBA_8888, 2)
+            virtualDisplay = mediaProjection.createVirtualDisplay("capture-overlay",
+                    screenSize.x, screenSize.y, resources.displayMetrics.densityDpi,
+                    DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY or DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
+                    imageReader!!.surface, null, null)
             overlayManager!!.onProjectionStart()
         }
     }
