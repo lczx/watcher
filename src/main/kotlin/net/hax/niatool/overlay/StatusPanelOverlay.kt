@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.view.View
 
-class StatusPanelOverlay(context: Context) {
+class StatusPanelOverlay(context: Context, private val armedStatusListener: OnArmedStatusListener? = null) {
 
     companion object {
         private val SIZE_BACKGROUND_INNER_WIDTH_DIP = 84f
@@ -24,7 +24,12 @@ class StatusPanelOverlay(context: Context) {
             if (field == value) return
             field = value
             viewport.postInvalidate() // Like invalidate, but thread-safe; no harm if called from strange services
+            armedStatusListener?.onArmedStatusChange(value)
         }
+
+    interface OnArmedStatusListener {
+        fun onArmedStatusChange(armed: Boolean)
+    }
 
     inner class StatusView(context: Context) : View(context) {
 

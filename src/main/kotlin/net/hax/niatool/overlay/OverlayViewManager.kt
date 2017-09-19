@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.WindowManager
+import net.hax.niatool.OverlayServiceUtil
 
 class OverlayViewManager(private val context: Context) {
 
@@ -48,7 +49,7 @@ class OverlayViewManager(private val context: Context) {
     private var controlOverlay: ControlPanelOverlay? = null
 
     fun startOverlay() {
-        statusOverlay = StatusPanelOverlay(context)
+        statusOverlay = StatusPanelOverlay(context, ArmedStatusListener())
         windowManager.addView(statusOverlay!!.viewport, LAYOUT_PARAMS_STATUS_OVERLAY)
         controlOverlay = ControlPanelOverlay(context)
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
@@ -59,6 +60,12 @@ class OverlayViewManager(private val context: Context) {
         controlOverlay = null
         windowManager.removeView(statusOverlay!!.viewport)
         statusOverlay = null
+    }
+
+    class ArmedStatusListener : StatusPanelOverlay.OnArmedStatusListener {
+        override fun onArmedStatusChange(armed: Boolean) {
+            OverlayServiceUtil.setArmed(armed)
+        }
     }
 
 }
