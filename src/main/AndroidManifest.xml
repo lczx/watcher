@@ -19,6 +19,10 @@
             </intent-filter>
         </activity>
 
+        <!-- To launch activity without showing the rest of the app: https://stackoverflow.com/questions/44559924 -->
+        <activity android:name=".CaptureRequestActivity" android:theme="@style/Theme.Transparent"
+                  android:launchMode="singleInstance" android:taskAffinity="" android:excludeFromRecents="true"/>
+
         <service android:name=".OverlayService" android:enabled="true" android:exported="false"/>
 
     </application>

@@ -1,7 +1,9 @@
 package net.hax.niatool.overlay
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.WindowManager
@@ -41,6 +43,17 @@ class OverlayViewManager(private val context: Context) {
             flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.LEFT
+        }
+
+        // TODO: Consider moving these somewhere else
+        fun launchActivityFromOverlay(ctx: Context, cls: Class<*>, flags: Int = 0) {
+            // To avoid long startup if invoked from launcher: https://stackoverflow.com/questions/5600084
+            val pi = PendingIntent.getActivity(ctx, 0, Intent(ctx, cls).setFlags(flags), 0)
+            try {
+                pi.send()
+            } catch (e: PendingIntent.CanceledException) {
+                throw AssertionError("...and why this intent should be canceled???")
+            }
         }
     }
 
