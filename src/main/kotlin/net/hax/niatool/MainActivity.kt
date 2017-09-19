@@ -1,6 +1,8 @@
 package net.hax.niatool
 
 import android.annotation.TargetApi
+import android.app.ActivityManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         // Service toggle switch configuration
         mServiceToggleSwitch = findViewById(R.id.switch_service_toggle) as SwitchCompat
+        mServiceToggleSwitch.isSaveEnabled = false
         mServiceToggleSwitch.setOnLongClickListener {
             Toast.makeText(this, R.string.toast_service_toggle, Toast.LENGTH_SHORT).show(); true
         }
@@ -43,6 +46,16 @@ class MainActivity : AppCompatActivity() {
         // Version note configuration
         (findViewById(R.id.version_note) as TextView).text =
                 getString(R.string.text_version_note, packageManager.getPackageInfo(packageName, 0).versionName)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Update the switch depending if our service is running or not
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        mServiceToggleSwitch.isChecked = manager.getRunningServices(Integer.MAX_VALUE).find {
+            OverlayService::class.java.name == it.service.className
+        } != null
     }
 
     @TargetApi(Build.VERSION_CODES.M)
