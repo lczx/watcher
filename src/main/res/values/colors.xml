@@ -5,4 +5,12 @@
     <color name="color_primary_dark">#b71c1c</color> <!-- Material Red 900 -->
     <color name="color_accent">#ffc107</color> <!-- Material Amber 500 -->
 
+    <!-- Overlay controller - Default theme -->
+    <color name="overlay_ctrl_frame_default">#70000000</color>
+    <color name="overlay_ctrl_icon_default">#44000000</color>
+
+    <!-- Overlay controller - Kahifrex theme -->
+    <color name="overlay_ctrl_frame_kahifrex">#70ffffff</color>
+    <color name="overlay_ctrl_icon_kahifrex">#44ffffff</color>
+
 </resources>

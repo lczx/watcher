@@ -5,9 +5,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.WindowManager
 import net.hax.niatool.OverlayServiceUtil
+import net.hax.niatool.R
 
 class OverlayViewManager(private val context: Context) {
 
@@ -64,10 +66,10 @@ class OverlayViewManager(private val context: Context) {
     fun startOverlay() {
         statusOverlay = StatusPanelOverlay(context, ArmedStatusListener())
         windowManager.addView(statusOverlay!!.viewport, LAYOUT_PARAMS_STATUS_OVERLAY)
-    }
+        }
 
     fun onProjectionStart() {
-        controlOverlay = ControlPanelOverlay(context)
+        controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, R.style.OverlayCtrl_Default))
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
 

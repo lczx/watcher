@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Additional attributes for application-defined widgets -->
+
+    <attr name="dispatcherRegions" format="reference"/>
+
+    <declare-styleable name="OverlayController">
+        <attr name="colorFrame" format="color"/>
+        <attr name="colorIcon" format="color"/>
+        <attr name="colorButtonCapture" format="color"/>
+        <attr name="colorButtonBack" format="color"/>
+        <attr name="colorButtonForward" format="color"/>
+    </declare-styleable>
+
+</resources>

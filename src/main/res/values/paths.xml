@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="overlay_ctrl_btn_capture_path" translatable="false">M 5 6, L 45 14, L 45 106, L 5 114, Z</string>
+    <string name="overlay_ctrl_btn_back_path" translatable="false">M 5 6, L 45 14, L 45 41, L 5 49, Z</string>
+    <string name="overlay_ctrl_btn_forward_path" translatable="false">M 5 54, L 45 46, L 45 106, L 5 114, Z</string>
+
+    <string-array name="overlay_ctrl_capture_dispatcher_regions">
+        <item>@string/overlay_ctrl_btn_capture_path</item>
+    </string-array>
+
+    <string-array name="overlay_ctrl_browse_dispatcher_regions">
+        <item>@string/overlay_ctrl_btn_back_path</item>
+        <item>@string/overlay_ctrl_btn_forward_path</item>
+    </string-array>
+
+</resources>
