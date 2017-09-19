@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:width="50dp"
         android:height="120dp"
         android:viewportWidth="50.0"
         android:viewportHeight="120.0">
 
     <path
-            android:fillColor="@color/overlay_ctrl_btn_green"
+            android:fillColor="?attr/colorButtonForward"
+            tools:fillColor="@color/overlay_ctrl_btn_green"
             android:pathData="@string/overlay_ctrl_btn_forward_path"/>
     <path
-            android:fillColor="@color/overlay_ctrl_icon_default"
+            android:fillColor="?attr/colorIcon"
+            tools:fillColor="@color/overlay_ctrl_icon_default"
             android:pathData="M 13 74, l 12 8, l 12 -8, l 0 7, l -12 8, l -12 -8, z"/>
 
 </vector>

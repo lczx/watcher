@@ -14,4 +14,15 @@
         <item name="android:background">?attr/colorPrimary</item>
     </style>
 
+    <!-- Overlay controller styles -->
+    <style name="OverlayCtrl"/>
+
+    <style name="OverlayCtrl.Default">
+        <item name="colorFrame">@color/overlay_ctrl_frame_default</item>
+        <item name="colorIcon">@color/overlay_ctrl_icon_default</item>
+        <item name="colorButtonCapture">@color/overlay_ctrl_btn_blue</item>
+        <item name="colorButtonBack">@color/overlay_ctrl_btn_red</item>
+        <item name="colorButtonForward">@color/overlay_ctrl_btn_green</item>
+    </style>
+
 </resources>
