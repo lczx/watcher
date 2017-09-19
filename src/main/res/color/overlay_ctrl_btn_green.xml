@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Light Green A700 -->
+    <item android:color="#AA64DD17" android:state_pressed="true"/>
+    <!-- Light Green A400 -->
+    <item android:color="#AA76FF03"/>
+</selector>

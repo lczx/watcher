@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Deep Orange A700 -->
+    <item android:color="#AADD2C00" android:state_pressed="true"/>
+    <!-- Deep Orange A400 -->
+    <item android:color="#AAFF3D00"/>
+</selector>

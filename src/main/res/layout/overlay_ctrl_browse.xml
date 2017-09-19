@@ -6,4 +6,20 @@
         android:layout_height="wrap_content"
         android:background="@drawable/overlay_ctrl_frame">
 
+    <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/overlay_ctrl_btn_back"
+            android:clickable="true"/>
+
+    <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/button_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/overlay_ctrl_btn_forward"
+            android:clickable="true"/>
+
 </FrameLayout>
