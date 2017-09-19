@@ -46,6 +46,14 @@ class OverlayViewManager(private val context: Context) {
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.LEFT
         }
+        private val LAYOUT_PARAMS_IMAGE_OVERLAY = WindowManager.LayoutParams().apply {
+            width = WindowManager.LayoutParams.MATCH_PARENT
+            height = WindowManager.LayoutParams.MATCH_PARENT
+            type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
+            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            format = PixelFormat.TRANSLUCENT
+            gravity = Gravity.CENTER
+        }
 
         // TODO: Consider moving these somewhere else
         fun launchActivityFromOverlay(ctx: Context, cls: Class<*>, flags: Int = 0) {
@@ -62,6 +70,7 @@ class OverlayViewManager(private val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var statusOverlay: StatusPanelOverlay? = null
     private var controlOverlay: ControlPanelOverlay? = null
+    private var imageOverlay: ImageOverlay? = null
 
     fun startOverlay() {
         statusOverlay = StatusPanelOverlay(context, ArmedStatusListener())
@@ -69,6 +78,8 @@ class OverlayViewManager(private val context: Context) {
         }
 
     fun onProjectionStart() {
+        imageOverlay = ImageOverlay(context)
+        windowManager.addView(imageOverlay!!.viewport, LAYOUT_PARAMS_IMAGE_OVERLAY)
         controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, R.style.OverlayCtrl_Default), CommandListener())
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
@@ -82,6 +93,8 @@ class OverlayViewManager(private val context: Context) {
         assert(controlOverlay != null, { "onProjectionStop() should not be called before onProjectionStart()" })
         windowManager.removeView(controlOverlay!!.viewport)
         controlOverlay = null
+        windowManager.removeView(imageOverlay!!.viewport)
+        imageOverlay = null
     }
 
     fun stopOverlay() {
@@ -96,9 +109,9 @@ class OverlayViewManager(private val context: Context) {
         }
     }
 
-    class CommandListener : ControlPanelOverlay.OnCommandListener {
+    inner class CommandListener : ControlPanelOverlay.OnCommandListener {
         override fun onModeChanged(inBrowseMode: Boolean) {
-            TODO("not implemented")
+            imageOverlay!!.visible = inBrowseMode
         }
 
         override fun onCaptureScreenCommand() {
