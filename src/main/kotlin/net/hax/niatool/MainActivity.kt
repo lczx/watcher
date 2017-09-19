@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Toolbar configuration
         setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         // Service toggle switch configuration
         mServiceToggleSwitch = findViewById(R.id.switch_service_toggle) as SwitchCompat
@@ -82,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             val dismissAction = DialogInterface.OnClickListener { _, _ ->
                 mServiceToggleSwitch.isChecked = false
             }
+
             AlertDialog.Builder(this)
                     .setTitle(R.string.overlay_permission_title)
                     .setMessage(R.string.overlay_permission_message)

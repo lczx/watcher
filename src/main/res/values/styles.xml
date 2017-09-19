@@ -12,6 +12,16 @@
 
     <style name="Widget.App.Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.App.Toolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:titleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Title</item>
+    </style>
+
+    <style name="TextAppearance.Widget.App.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:letterSpacing">0.1</item>
+        <item name="localFontFamily">Gravedigger</item>
     </style>
 
     <!-- For CaptureRequestActivity -->
