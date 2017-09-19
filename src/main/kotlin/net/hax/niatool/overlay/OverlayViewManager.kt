@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.R
@@ -126,11 +128,15 @@ class OverlayViewManager(private val context: Context) {
         }
 
         override fun onBrowseBackCommand() {
-            TODO("not implemented")
+            if (imageOverlay?.viewport?.visibility != View.VISIBLE)
+                Log.w(TAG, "Flow warning: should not be possible to browse if control & image overlays are hidden")
+            imageOverlay?.previousImage()
         }
 
         override fun onBrowseForwardCommand() {
-            TODO("not implemented")
+            if (imageOverlay?.viewport?.visibility != View.VISIBLE)
+                Log.w(TAG, "Flow warning: should not be possible to browse if control & image overlays are hidden")
+            imageOverlay?.nextImage()
         }
     }
 
