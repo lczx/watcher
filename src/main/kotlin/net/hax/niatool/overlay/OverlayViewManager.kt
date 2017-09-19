@@ -69,7 +69,7 @@ class OverlayViewManager(private val context: Context) {
         }
 
     fun onProjectionStart() {
-        controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, R.style.OverlayCtrl_Default))
+        controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, R.style.OverlayCtrl_Default), CommandListener())
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
 
@@ -93,6 +93,24 @@ class OverlayViewManager(private val context: Context) {
     class ArmedStatusListener : StatusPanelOverlay.OnArmedStatusListener {
         override fun onArmedStatusChange(armed: Boolean) {
             OverlayServiceUtil.setArmed(armed)
+        }
+    }
+
+    class CommandListener : ControlPanelOverlay.OnCommandListener {
+        override fun onModeChanged(inBrowseMode: Boolean) {
+            TODO("not implemented")
+        }
+
+        override fun onCaptureScreenCommand() {
+            TODO("not implemented")
+        }
+
+        override fun onBrowseBackCommand() {
+            TODO("not implemented")
+        }
+
+        override fun onBrowseForwardCommand() {
+            TODO("not implemented")
         }
     }
 
