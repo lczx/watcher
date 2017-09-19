@@ -1,10 +1,12 @@
 package net.hax.niatool.overlay
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.view.View
+import net.hax.niatool.MainActivity
 
 class StatusPanelOverlay(context: Context, private val armedStatusListener: OnArmedStatusListener? = null) {
 
@@ -61,6 +63,10 @@ class StatusPanelOverlay(context: Context, private val armedStatusListener: OnAr
         init {
             setWillNotDraw(false)
             setOnClickListener { armed = !armed }
+            setOnLongClickListener {
+                OverlayViewManager.launchActivityFromOverlay(
+                        context, MainActivity::class.java, Intent.FLAG_ACTIVITY_NEW_TASK); true
+            }
         }
 
         override fun onDraw(canvas: Canvas) {
