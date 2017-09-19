@@ -2,6 +2,7 @@ package net.hax.niatool
 
 import android.app.Service
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.hardware.display.DisplayManager
@@ -13,6 +14,7 @@ import android.os.IBinder
 import android.os.Message
 import android.util.Log
 import net.hax.niatool.overlay.OverlayViewManager
+import net.hax.niatool.task.ScreenCaptureTask
 
 // TODO: We may want to change this service to another type that may run on a different thread,
 // TODO:   so we must ensure that calls to UI components are safely handled on the UI thread.
@@ -117,6 +119,13 @@ class OverlayService : Service() {
     private fun takeShot() {
         assert(mediaProjection != null,
                 { "Capture button should not be available unless armed/MediaProjection available" })
+
+        // Start an async task to capture the screen, we pass in a postProcess lambda to crop the image and keep
+        // only the center square of the screen, as a callback (on UI thread) we pass overlayManager.onImageAvailable()
+        ScreenCaptureTask({ image, capture ->
+            // TODO: NOT ORIENTATION SAFE
+            Bitmap.createBitmap(capture, 0, (image.height - image.width) / 2, image.width, image.width)
+        }, overlayManager!!::onImageAvailable).execute(imageReader!!)
     }
 
 }

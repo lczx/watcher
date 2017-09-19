@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -91,6 +92,7 @@ class OverlayViewManager(private val context: Context) {
 
     fun onProjectionStop() {
         assert(controlOverlay != null, { "onProjectionStop() should not be called before onProjectionStart()" })
+        imageOverlay!!.recycleAll()
         windowManager.removeView(controlOverlay!!.viewport)
         controlOverlay = null
         windowManager.removeView(imageOverlay!!.viewport)
@@ -103,6 +105,10 @@ class OverlayViewManager(private val context: Context) {
         statusOverlay = null
     }
 
+    fun onImageAvailable(bitmap: Bitmap) {
+        imageOverlay!!.addImage(bitmap)
+    }
+
     class ArmedStatusListener : StatusPanelOverlay.OnArmedStatusListener {
         override fun onArmedStatusChange(armed: Boolean) {
             OverlayServiceUtil.setArmed(armed)
@@ -112,6 +118,7 @@ class OverlayViewManager(private val context: Context) {
     inner class CommandListener : ControlPanelOverlay.OnCommandListener {
         override fun onModeChanged(inBrowseMode: Boolean) {
             imageOverlay!!.visible = inBrowseMode
+            if (!inBrowseMode) imageOverlay!!.recycleAll()
         }
 
         override fun onCaptureScreenCommand() {

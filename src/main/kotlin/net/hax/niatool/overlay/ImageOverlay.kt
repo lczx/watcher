@@ -1,9 +1,9 @@
 package net.hax.niatool.overlay
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
-import net.hax.niatool.R
 
 class ImageOverlay(context: Context) {
 
@@ -11,10 +11,11 @@ class ImageOverlay(context: Context) {
         private val TAG = "ImageOverlay"
     }
 
+    private var currentImage: Bitmap? = null
+
     val viewport = ImageView(context).apply {
         visibility = View.INVISIBLE
         alpha = .4f
-        setImageDrawable(resources.getDrawable(R.drawable.the_truth, context.theme))
     }
 
     var visible: Boolean
@@ -26,5 +27,17 @@ class ImageOverlay(context: Context) {
             }
         }
         get() = viewport.visibility == View.VISIBLE
+
+    fun addImage(bitmap: Bitmap) {
+        viewport.setImageBitmap(bitmap)
+        currentImage?.recycle()
+        currentImage = bitmap
+    }
+
+    fun recycleAll() {
+        viewport.setImageDrawable(null)
+        currentImage?.recycle()
+        currentImage = null
+    }
 
 }
