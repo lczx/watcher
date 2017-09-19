@@ -1,5 +1,6 @@
 package net.hax.niatool.overlay
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
 import android.view.Gravity
@@ -29,17 +30,33 @@ class OverlayViewManager(private val context: Context) {
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.CENTER  // This may look weird on Essential Phone :D
         }
+        @SuppressLint("RtlHardcoded")
+        private val LAYOUT_PARAMS_CONTROL_OVERLAY = WindowManager.LayoutParams().apply {
+            width = WindowManager.LayoutParams.WRAP_CONTENT
+            height = WindowManager.LayoutParams.WRAP_CONTENT
+            x = 0
+            y = 200
+            type = WindowManager.LayoutParams.TYPE_PHONE
+            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            format = PixelFormat.TRANSLUCENT
+            gravity = Gravity.TOP or Gravity.LEFT
+        }
     }
 
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var statusOverlay: StatusPanelOverlay? = null
+    private var controlOverlay: ControlPanelOverlay? = null
 
     fun startOverlay() {
         statusOverlay = StatusPanelOverlay(context)
         windowManager.addView(statusOverlay!!.viewport, LAYOUT_PARAMS_STATUS_OVERLAY)
+        controlOverlay = ControlPanelOverlay(context)
+        windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
 
     fun stopOverlay() {
+        windowManager.removeView(controlOverlay!!.viewport)
+        controlOverlay = null
         windowManager.removeView(statusOverlay!!.viewport)
         statusOverlay = null
     }
