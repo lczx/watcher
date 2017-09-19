@@ -64,13 +64,26 @@ class OverlayViewManager(private val context: Context) {
     fun startOverlay() {
         statusOverlay = StatusPanelOverlay(context, ArmedStatusListener())
         windowManager.addView(statusOverlay!!.viewport, LAYOUT_PARAMS_STATUS_OVERLAY)
+    }
+
+    fun onProjectionStart() {
         controlOverlay = ControlPanelOverlay(context)
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
 
-    fun stopOverlay() {
+    fun onProjectionStartAborted() {
+        // TODO: Current implementation of StatusPanelOverlay re-sends MESSAGE_ARMED_STATE CHANGED, avoid if possible
+        statusOverlay!!.armed = false
+    }
+
+    fun onProjectionStop() {
+        assert(controlOverlay != null, { "onProjectionStop() should not be called before onProjectionStart()" })
         windowManager.removeView(controlOverlay!!.viewport)
         controlOverlay = null
+    }
+
+    fun stopOverlay() {
+        assert(controlOverlay == null, { "stopOverlay() should not be called before onProjectionStop()" })
         windowManager.removeView(statusOverlay!!.viewport)
         statusOverlay = null
     }

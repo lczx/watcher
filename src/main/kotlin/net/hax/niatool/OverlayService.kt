@@ -9,6 +9,9 @@ import android.os.Message
 import android.util.Log
 import net.hax.niatool.overlay.OverlayViewManager
 
+// TODO: We may want to change this service to another type that may run on a different thread,
+// TODO:   so we must ensure that calls to UI components are safely handled on the UI thread.
+
 class OverlayService : Service() {
 
     companion object {
@@ -72,6 +75,7 @@ class OverlayService : Service() {
             Log.w(TAG, "Flow warning: you have tried to stop MediaProjection without starting it first")
             return
         }
+        overlayManager!!.onProjectionStop()
 
         mediaProjection!!.stop()
         mediaProjection = null
@@ -80,9 +84,11 @@ class OverlayService : Service() {
     private fun onMediaProjectionAvailable(mediaProjection: MediaProjection?) {
         if (mediaProjection == null) {
             Log.d(TAG, "The user did not allow initialization of the MediaProjection API")
+            overlayManager!!.onProjectionStartAborted()
         } else {
             Log.d(TAG, "Permission granted, initializing MediaProjection")
             this.mediaProjection = mediaProjection
+            overlayManager!!.onProjectionStart()
         }
     }
 
