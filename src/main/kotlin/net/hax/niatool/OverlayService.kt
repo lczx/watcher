@@ -17,6 +17,7 @@ class OverlayService : Service() {
     companion object {
         val MESSAGE_ARMED_STATE_CHANGED = 0
         val MESSAGE_SET_MEDIA_PROJECTION = 1
+        val MESSAGE_CAPTURE_SCREEN = 2
 
         val handler = ServiceHandler()
 
@@ -38,6 +39,8 @@ class OverlayService : Service() {
                             instance!!.stopMediaProjection()
                     MESSAGE_SET_MEDIA_PROJECTION ->
                         instance!!.onMediaProjectionAvailable(msg.obj as MediaProjection?)
+                    MESSAGE_CAPTURE_SCREEN ->
+                        instance!!.takeShot()
                 }
             }
         }
@@ -90,6 +93,11 @@ class OverlayService : Service() {
             this.mediaProjection = mediaProjection
             overlayManager!!.onProjectionStart()
         }
+    }
+
+    private fun takeShot() {
+        assert(mediaProjection != null,
+                { "Capture button should not be available unless armed/MediaProjection available" })
     }
 
 }

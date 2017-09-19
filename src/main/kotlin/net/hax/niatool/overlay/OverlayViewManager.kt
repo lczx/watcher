@@ -115,7 +115,7 @@ class OverlayViewManager(private val context: Context) {
         }
 
         override fun onCaptureScreenCommand() {
-            TODO("not implemented")
+            OverlayServiceUtil.captureScreen()
         }
 
         override fun onBrowseBackCommand() {

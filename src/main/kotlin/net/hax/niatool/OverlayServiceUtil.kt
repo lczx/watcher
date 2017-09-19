@@ -11,6 +11,9 @@ object OverlayServiceUtil {
     fun setMediaProjection(mediaProjection: MediaProjection?) =
             sendMessageToService(OverlayService.MESSAGE_SET_MEDIA_PROJECTION, mediaProjection)
 
+    fun captureScreen() =
+            OverlayService.handler.sendEmptyMessage(OverlayService.MESSAGE_CAPTURE_SCREEN)
+
     private fun sendMessageToService(code: Int, data: Any?) =
             OverlayService.handler.sendMessage(Message.obtain(OverlayService.handler, code, data))
 
