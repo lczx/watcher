@@ -27,9 +27,9 @@ class ControlPanelOverlay(private val context: Context) {
 
     init {
         // We use an handler to schedule the view swap for later execution and allow the button to give touch feedback
-        viewCapture.findViewById(R.id.button_capture).setOnLongClickListener {
-            uiHandler.post({ inBrowseMode = !inBrowseMode }); true
-        }
+        val switchModeListener = View.OnLongClickListener { uiHandler.post({ inBrowseMode = !inBrowseMode }); true }
+        viewCapture.findViewById(R.id.button_capture).setOnLongClickListener(switchModeListener)
+        viewBrowse.findViewById(R.id.button_forward).setOnLongClickListener(switchModeListener)
     }
 
     private fun createView(@LayoutRes res: Int): View {
