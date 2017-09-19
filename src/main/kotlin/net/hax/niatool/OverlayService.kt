@@ -104,7 +104,7 @@ class OverlayService : Service() {
         } else {
             Log.d(TAG, "Permission granted, initializing MediaProjection")
             this.mediaProjection = mediaProjection
-            // TODO: NOT ORIENTATION SAFE, we should reinitialize imageReader & co on orientation change
+            // TODO: NOT ORIENTATION SAFE, we should reinitialize imageReader & co. on orientation change
             val screenSize = Point()
             overlayManager!!.windowManager.defaultDisplay.getSize(screenSize) // getWindowManager() in Activity
             imageReader = ImageReader.newInstance(screenSize.x, screenSize.y, PixelFormat.RGBA_8888, 2)
@@ -112,6 +112,7 @@ class OverlayService : Service() {
                     screenSize.x, screenSize.y, resources.displayMetrics.densityDpi,
                     DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY or DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                     imageReader!!.surface, null, null)
+
             overlayManager!!.onProjectionStart()
         }
     }
