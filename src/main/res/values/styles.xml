@@ -25,4 +25,12 @@
         <item name="colorButtonForward">@color/overlay_ctrl_btn_green</item>
     </style>
 
+    <style name="OverlayCtrl.Kahifrex">
+        <item name="colorFrame">@color/overlay_ctrl_frame_kahifrex</item>
+        <item name="colorIcon">@color/overlay_ctrl_icon_kahifrex</item>
+        <item name="colorButtonCapture">@android:color/transparent</item>
+        <item name="colorButtonBack">@android:color/transparent</item>
+        <item name="colorButtonForward">@android:color/transparent</item>
+    </style>
+
 </resources>
