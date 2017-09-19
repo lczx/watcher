@@ -4,7 +4,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/overlay_ctrl_frame">
+        android:background="@drawable/overlay_ctrl_frame2">
 
     <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/button_back"
