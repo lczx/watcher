@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<net.hax.niatool.widget.DispatcherLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/overlay_ctrl_frame">
+        android:background="@drawable/overlay_ctrl_frame"
+        app:dispatcherRegions="@array/overlay_ctrl_capture_dispatcher_regions">
 
     <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/button_capture"
@@ -14,4 +15,4 @@
             android:src="@drawable/overlay_ctrl_btn_capture"
             android:clickable="true"/>
 
-</FrameLayout>
+</net.hax.niatool.widget.DispatcherLayout>

@@ -7,7 +7,7 @@
 
     <path
             android:fillColor="@color/overlay_ctrl_btn_green"
-            android:pathData="M 5 54, L 45 46, L 45 106, L 5 114, Z"/>
+            android:pathData="@string/overlay_ctrl_btn_forward_path"/>
     <path
             android:fillColor="@color/overlay_ctrl_icon_default"
             android:pathData="M 13 74, l 12 8, l 12 -8, l 0 7, l -12 8, l -12 -8, z"/>
