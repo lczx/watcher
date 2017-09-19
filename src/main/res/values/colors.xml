@@ -5,4 +5,9 @@
     <color name="colorPrimaryDark">#b71c1c</color> <!-- Material Red 900 -->
     <color name="colorAccent">#ffc107</color> <!-- Material Amber 500 -->
 
+    <!-- Overlay controller -->
+    <color name="overlay_ctrl_frame_default">#70000000</color>
+    <color name="overlay_ctrl_icon_default">#44000000</color>
+    <color name="overlay_ctrl_btn_blue">#AA00B0FF</color> <!-- Material Light Blue A400 -->
+
 </resources>
