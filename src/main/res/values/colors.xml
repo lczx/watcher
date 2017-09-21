@@ -5,6 +5,9 @@
     <color name="color_primary_dark">#b71c1c</color> <!-- Material Red 900 -->
     <color name="color_accent">#ffc107</color> <!-- Material Amber 500 -->
 
+    <color name="main_activity_color_etched">#777</color>
+    <color name="main_activity_color_status_bar">#222</color>
+
     <!-- Overlay controller - Default theme -->
     <color name="overlay_ctrl_frame_default">#70000000</color>
     <color name="overlay_ctrl_icon_default">#44000000</color>

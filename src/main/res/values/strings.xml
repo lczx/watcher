@@ -3,13 +3,18 @@
 
     <string name="app_name" translatable="false">Watcher</string>
 
+    <string name="menu_settings">Settings</string>
     <string name="overlay_permission_title">Permission required</string>
-    <string name="overlay_permission_message">In order to function, I need you to give me the permission to draw over other apps.\n\nClicking OK will show the settings page where you can authorize me to do that, thanks!</string>
+    <string name="overlay_permission_message">In order to function, I need you to give me the permission to draw over
+        other apps.\n\nClicking OK will show the settings page where you can authorize me to do that, thanks!
+    </string>
     <string name="toast_service_toggle">Toggle Overlay</string>
     <string name="toast_shot_taken">Shot #%d taken!</string>
     <string name="toast_shot_browse">%1$d of %2$d</string>
     <string name="text_version_note" formatted="true">Version %s</string>
     <string name="alert_prerelease_title">Experimental version!</string>
-    <string name="alert_prerelease_text">This is a <b>pre-release version of Watcher</b> and thus is very likely to misbehave and do weird things to your device, <i>you have been warned</i>!</string>
+    <string name="alert_prerelease_text">This is a <b>pre-release version of Watcher</b> and thus is very likely to
+        misbehave and do weird things to your device, <i>you have been warned</i>!
+    </string>
 
 </resources>

@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
+import android.support.v7.view.ContextThemeWrapper
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -69,10 +69,17 @@ class OverlayViewManager(private val context: Context) {
                 throw AssertionError("...and why this intent should be canceled???")
             }
         }
+
+        fun getControlToastYOffset(ctx: Context): Int {
+            val display = ctx.resources.displayMetrics
+            return -Math.min(display.widthPixels, display.heightPixels) / 2 - (60 * display.density).toInt()
+        }
     }
 
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT)
+    private val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
+        setGravity(Gravity.CENTER, 0, OverlayViewManager.getControlToastYOffset(context))
+    }
     private var statusOverlay: StatusPanelOverlay? = null
     private var controlOverlay: ControlPanelOverlay? = null
     private var imageOverlay: ImageOverlay? = null
@@ -80,7 +87,7 @@ class OverlayViewManager(private val context: Context) {
     fun startOverlay() {
         statusOverlay = StatusPanelOverlay(context, ArmedStatusListener())
         windowManager.addView(statusOverlay!!.viewport, LAYOUT_PARAMS_STATUS_OVERLAY)
-        }
+    }
 
     fun onProjectionStart() {
         imageOverlay = ImageOverlay(context)
@@ -90,7 +97,7 @@ class OverlayViewManager(private val context: Context) {
     }
 
     fun onProjectionStartAborted() {
-        // TODO: Current implementation of StatusPanelOverlay re-sends MESSAGE_ARMED_STATE CHANGED, avoid if possible
+        // TODO: Current implementation of StatusPanelOverlay re-sends MESSAGE_ARMED_STATE_CHANGED, avoid if possible
         statusOverlay!!.armed = false
     }
 

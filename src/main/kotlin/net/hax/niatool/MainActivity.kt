@@ -5,15 +5,23 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Point
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.support.v4.view.GravityCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 
@@ -28,14 +36,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme_MainActivity) // Get rid of the launcher theme
         setContentView(R.layout.activity_main)
+
+        // Toolbar configuration
         setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         // Service toggle switch configuration
         mServiceToggleSwitch = findViewById(R.id.switch_service_toggle) as SwitchCompat
         mServiceToggleSwitch.isSaveEnabled = false
-        mServiceToggleSwitch.setOnLongClickListener {
-            Toast.makeText(this, R.string.toast_service_toggle, Toast.LENGTH_SHORT).show(); true
+        mServiceToggleSwitch.setOnLongClickListener { v ->
+            val location = calculateSwitchTipLocation(v)
+            val cheatSheet = Toast.makeText(this, R.string.toast_service_toggle, Toast.LENGTH_SHORT)
+            cheatSheet.setGravity(Gravity.TOP or GravityCompat.START, location.x, location.y)
+            cheatSheet.show(); true
         }
         mServiceToggleSwitch.setOnCheckedChangeListener { _, isChecked ->
             // Note: this gets invoked even when we toggle the switch programmatically,
@@ -56,6 +71,17 @@ class MainActivity : AppCompatActivity() {
         mServiceToggleSwitch.isChecked = manager.getRunningServices(Integer.MAX_VALUE).find {
             OverlayService::class.java.name == it.service.className
         } != null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item!!.itemId == R.id.open_settings)
+            Toast.makeText(this, "Not implemented (yet)", Toast.LENGTH_SHORT).show()
+        return super.onOptionsItemSelected(item)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -82,6 +108,7 @@ class MainActivity : AppCompatActivity() {
             val dismissAction = DialogInterface.OnClickListener { _, _ ->
                 mServiceToggleSwitch.isChecked = false
             }
+
             AlertDialog.Builder(this)
                     .setTitle(R.string.overlay_permission_title)
                     .setMessage(R.string.overlay_permission_message)
@@ -103,6 +130,22 @@ class MainActivity : AppCompatActivity() {
     private fun stopOverlay() {
         Log.d(TAG, "Stopping overlay service")
         stopService(Intent(this, OverlayService::class.java))
+    }
+
+    private fun calculateSwitchTipLocation(v: View): Point {
+        // Simulate ActionMenuItemView#onLongClick() toast positioning
+        val toolbarPos = IntArray(2)
+        val screenPos = IntArray(2)
+        v.getLocationOnScreen(screenPos)
+        (v.parent as View).getLocationOnScreen(toolbarPos)
+        val displayFrame = Rect()
+        v.getWindowVisibleDisplayFrame(displayFrame)
+
+        var referenceX = screenPos[0] + v.width / 2
+        if (ViewCompat.getLayoutDirection(v) == ViewCompat.LAYOUT_DIRECTION_RTL)
+            referenceX = v.resources.displayMetrics.widthPixels - referenceX // mirror
+
+        return Point(referenceX, toolbarPos[1] + (v.parent as View).height - displayFrame.top)
     }
 
 }

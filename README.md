@@ -16,7 +16,7 @@ It is needless to say that this surely violates the game's EULA, in
 fact they might ban your account or better, `FLAG_SECURE` their content
 so there is no way I can screenshot their things without root.
 
-**See [Contributing][#contributing] for more!**
+**See [Contributing](#contributing) for more!**
 
 ### Usage
 
@@ -45,4 +45,6 @@ If you like coding and are willing to help,
 
 ### License
 
-This application is under the MIT license.
+This application is under the MIT license, however the logo font is under a
+[Font Software License Agreement - Non-Commercial](src/main/assets/fonts/Gravedigger_license.html)
+license by Chequered Ink Ltd.
