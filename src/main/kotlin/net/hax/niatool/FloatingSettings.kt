@@ -1,7 +1,6 @@
 package net.hax.niatool
 
 import android.app.Activity
-import android.support.v4.widget.Space
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,8 @@ class FloatingSettings(activity: Activity) {
         private val POPUP_WIDTH_DIP = 240
     }
 
-    private val popup = PopupWindow(Space(activity).apply { minimumHeight = 400 },
+    private val view = activity.layoutInflater.inflate(R.layout.floating_settings, null)
+    private val popup = PopupWindow(view,
             (POPUP_WIDTH_DIP * activity.resources.displayMetrics.density).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT).apply {
         setBackgroundDrawable(activity.resources.getDrawable(R.drawable.floating_settings_background, activity.theme))

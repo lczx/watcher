@@ -4,6 +4,9 @@
     <string name="app_name" translatable="false">Watcher</string>
 
     <string name="menu_settings">Settings</string>
+    <string name="settings_caption_theme">Overlay theme</string>
+    <string name="settings_caption_animations">Use animations</string>
+
     <string name="overlay_permission_title">Permission required</string>
     <string name="overlay_permission_message">In order to function, I need you to give me the permission to draw over
         other apps.\n\nClicking OK will show the settings page where you can authorize me to do that, thanks!
