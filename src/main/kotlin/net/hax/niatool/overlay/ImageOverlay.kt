@@ -2,6 +2,8 @@ package net.hax.niatool.overlay
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -14,6 +16,8 @@ class ImageOverlay(private val context: Context) {
 
     companion object {
         private val TAG = "ImageOverlay"
+        private val USE_TRANSITIONS = true
+        private val TRANSITION_DURATION_MS = 150
     }
 
     private val indexToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
@@ -50,14 +54,20 @@ class ImageOverlay(private val context: Context) {
 
     fun previousImage() {
         if (mImageIndex > 0) {
-            viewport.setImageBitmap(mImageList[--mImageIndex])
+            if (USE_TRANSITIONS)
+                animateTo(mImageList[mImageIndex], mImageList[--mImageIndex])
+            else
+                viewport.setImageBitmap(mImageList[--mImageIndex])
             showIndexToast()
         }
     }
 
     fun nextImage() {
         if (mImageIndex < mImageList.size - 1) {
-            viewport.setImageBitmap(mImageList[++mImageIndex])
+            if (USE_TRANSITIONS)
+                animateTo(mImageList[mImageIndex], mImageList[++mImageIndex])
+            else
+                viewport.setImageBitmap(mImageList[++mImageIndex])
             showIndexToast()
         }
     }
@@ -73,6 +83,15 @@ class ImageOverlay(private val context: Context) {
         val indexMessage = context.getString(R.string.toast_shot_browse, mImageIndex + 1, mImageList.size)
         indexToast.setText(indexMessage)
         indexToast.show()
+    }
+
+    private fun animateTo(previous: Bitmap, next: Bitmap) {
+        val transition = TransitionDrawable(arrayOf(
+                BitmapDrawable(context.resources, previous),
+                BitmapDrawable(context.resources, next)))
+        transition.isCrossFadeEnabled = true
+        viewport.setImageDrawable(transition)
+        transition.startTransition(TRANSITION_DURATION_MS)
     }
 
 }
