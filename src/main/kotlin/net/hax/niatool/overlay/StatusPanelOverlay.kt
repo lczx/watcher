@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.view.View
 import net.hax.niatool.MainActivity
+import net.hax.niatool.launchActivityFromOverlay
+import net.hax.niatool.obtainStatusBarHeight
 
 class StatusPanelOverlay(context: Context, private val armedStatusListener: OnArmedStatusListener? = null) {
 
@@ -38,11 +40,7 @@ class StatusPanelOverlay(context: Context, private val armedStatusListener: OnAr
         // We want to use dp instead of sp also for the text
         // and ignore system font size because the status bar is always the same height
         private val dp = resources.displayMetrics.density
-
-        private val mStatusBarHeight = run {
-            val resId = resources.getIdentifier("status_bar_height", "dimen", "android")
-            if (resId > 0) resources.getDimensionPixelSize(resId) else 0
-        }
+        private val mStatusBarHeight = obtainStatusBarHeight(resources)
         private val mTextPaint = Paint().apply {
             isAntiAlias = true
             textSize = SIZE_TEXT_DIP * dp
@@ -64,7 +62,7 @@ class StatusPanelOverlay(context: Context, private val armedStatusListener: OnAr
             setWillNotDraw(false)
             setOnClickListener { armed = !armed }
             setOnLongClickListener {
-                OverlayViewManager.launchActivityFromOverlay(
+                launchActivityFromOverlay(
                         context, MainActivity::class.java, Intent.FLAG_ACTIVITY_NEW_TASK); true
             }
         }

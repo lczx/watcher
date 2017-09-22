@@ -1,9 +1,7 @@
 package net.hax.niatool.overlay
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.support.v7.view.ContextThemeWrapper
@@ -14,6 +12,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.R
+import net.hax.niatool.calculateControlToastYOffset
 
 class OverlayViewManager(private val context: Context) {
 
@@ -58,27 +57,11 @@ class OverlayViewManager(private val context: Context) {
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.CENTER
         }
-
-        // TODO: Consider moving these somewhere else
-        fun launchActivityFromOverlay(ctx: Context, cls: Class<*>, flags: Int = 0) {
-            // To avoid long startup if invoked from launcher: https://stackoverflow.com/questions/5600084
-            val pi = PendingIntent.getActivity(ctx, 0, Intent(ctx, cls).setFlags(flags), 0)
-            try {
-                pi.send()
-            } catch (e: PendingIntent.CanceledException) {
-                throw AssertionError("...and why this intent should be canceled???")
-            }
-        }
-
-        fun getControlToastYOffset(ctx: Context): Int {
-            val display = ctx.resources.displayMetrics
-            return -Math.min(display.widthPixels, display.heightPixels) / 2 - (60 * display.density).toInt()
-        }
     }
 
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
-        setGravity(Gravity.CENTER, 0, OverlayViewManager.getControlToastYOffset(context))
+        setGravity(Gravity.CENTER, 0, calculateControlToastYOffset(context))
     }
     private var statusOverlay: StatusPanelOverlay? = null
     private var controlOverlay: ControlPanelOverlay? = null

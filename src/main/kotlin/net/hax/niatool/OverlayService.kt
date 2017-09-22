@@ -78,7 +78,7 @@ class OverlayService : Service() {
     }
 
     private fun initializeMediaProjection() {
-        OverlayViewManager.launchActivityFromOverlay(this, CaptureRequestActivity::class.java)
+        launchActivityFromOverlay(this, CaptureRequestActivity::class.java)
     }
 
     private fun stopMediaProjection() {

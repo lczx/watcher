@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import net.hax.niatool.R
+import net.hax.niatool.calculateControlToastYOffset
 
 class ImageOverlay(private val context: Context) {
 
@@ -16,7 +17,7 @@ class ImageOverlay(private val context: Context) {
     }
 
     private val indexToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
-        setGravity(Gravity.CENTER, 0, OverlayViewManager.getControlToastYOffset(context))
+        setGravity(Gravity.CENTER, 0, calculateControlToastYOffset(context))
     }
     private val mImageList = mutableListOf<Bitmap>()
     private var mImageIndex = 0 // Better use this than an Iterator, also Kotlin has only ArrayLists
