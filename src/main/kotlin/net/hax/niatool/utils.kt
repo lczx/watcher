@@ -33,3 +33,9 @@ abstract class AnimationAdapter : Animation.AnimationListener {
 
     override fun onAnimationRepeat(animation: Animation?) {}
 }
+
+fun Animation.onEnd(callback: (animation: Animation?) -> Unit) {
+    this.setAnimationListener(object : AnimationAdapter() {
+        override fun onAnimationEnd(animation: Animation?) = callback(animation)
+    })
+}
