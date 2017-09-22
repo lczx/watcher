@@ -51,6 +51,7 @@
     </style>
 
 
+
     <!-- For CaptureRequestActivity -->
     <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
         <!-- Equivalent of theme with parent "android:Theme.Translucent.NoTitleBar"
@@ -62,6 +63,7 @@
         <item name="android:windowIsFloating">true</item>
         <!--<item name="android:backgroundDimEnabled">false</item>-->
     </style>
+
 
     <!-- Overlay controller styles -->
     <style name="OverlayCtrl"/>
@@ -80,6 +82,14 @@
         <item name="colorButtonCapture">@android:color/transparent</item>
         <item name="colorButtonBack">@android:color/transparent</item>
         <item name="colorButtonForward">@android:color/transparent</item>
+    </style>
+
+
+    <!-- Settings menu animation -->
+    <style name="Animation.App.DropUpRightDownLeft" parent="android:Animation">
+        <!-- Simulates "Animation.AppCompat.DropDownUp" -->
+        <item name="android:windowEnterAnimation">@anim/abc_grow_fade_in_from_top_right</item>
+        <item name="android:windowExitAnimation">@anim/abc_shrink_fade_out_from_top_right</item>
     </style>
 
 </resources>

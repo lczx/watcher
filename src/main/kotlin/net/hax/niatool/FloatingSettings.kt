@@ -18,6 +18,7 @@ class FloatingSettings(activity: Activity) {
             (POPUP_WIDTH_DIP * activity.resources.displayMetrics.density).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT).apply {
         setBackgroundDrawable(activity.resources.getDrawable(R.drawable.floating_settings_background, activity.theme))
+        animationStyle = R.style.Animation_App_DropUpRightDownLeft
         isOutsideTouchable = true
         elevation = 10f
         setOnDismissListener {
