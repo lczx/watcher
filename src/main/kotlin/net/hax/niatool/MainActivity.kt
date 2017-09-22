@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         private val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
     }
 
+    private val floatingSettings by lazy { FloatingSettings(this) }
     private lateinit var mServiceToggleSwitch: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +80,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.open_settings)
-            Toast.makeText(this, "Not implemented (yet)", Toast.LENGTH_SHORT).show()
+        if (item!!.itemId == R.id.open_settings) {
+            val dp = resources.displayMetrics.density
+            floatingSettings.showAtLocation(findViewById(R.id.open_settings), Gravity.TOP or GravityCompat.END,
+                    (4 * dp).toInt(), obtainStatusBarHeight(resources) + (4 * dp).toInt())
+        }
         return super.onOptionsItemSelected(item)
     }
 
