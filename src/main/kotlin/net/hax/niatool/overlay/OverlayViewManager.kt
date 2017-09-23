@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.R
 import net.hax.niatool.calculateControlToastYOffset
@@ -75,7 +76,7 @@ class OverlayViewManager(private val context: Context) {
     fun onProjectionStart() {
         imageOverlay = ImageOverlay(context)
         windowManager.addView(imageOverlay!!.viewport, LAYOUT_PARAMS_IMAGE_OVERLAY)
-        controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, R.style.OverlayCtrl_Default), CommandListener())
+        controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, ApplicationSettings.overlayTheme), CommandListener())
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
 

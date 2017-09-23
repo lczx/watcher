@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.R
 import net.hax.niatool.calculateControlToastYOffset
 
@@ -16,7 +17,6 @@ class ImageOverlay(private val context: Context) {
 
     companion object {
         private val TAG = "ImageOverlay"
-        private val USE_TRANSITIONS = true
         private val TRANSITION_DURATION_MS = 150
     }
 
@@ -54,7 +54,7 @@ class ImageOverlay(private val context: Context) {
 
     fun previousImage() {
         if (mImageIndex > 0) {
-            if (USE_TRANSITIONS)
+            if (ApplicationSettings.animationsEnabled)
                 animateTo(mImageList[mImageIndex], mImageList[--mImageIndex])
             else
                 viewport.setImageBitmap(mImageList[--mImageIndex])
@@ -64,7 +64,7 @@ class ImageOverlay(private val context: Context) {
 
     fun nextImage() {
         if (mImageIndex < mImageList.size - 1) {
-            if (USE_TRANSITIONS)
+            if (ApplicationSettings.animationsEnabled)
                 animateTo(mImageList[mImageIndex], mImageList[++mImageIndex])
             else
                 viewport.setImageBitmap(mImageList[++mImageIndex])
