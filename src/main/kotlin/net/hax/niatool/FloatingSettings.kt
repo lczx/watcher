@@ -14,7 +14,8 @@ class FloatingSettings(activity: Activity) {
         private val POPUP_WIDTH_DIP = 240
     }
 
-    private val mView = activity.layoutInflater.inflate(R.layout.floating_settings, null)
+    private val mView = activity.layoutInflater.inflate(R.layout.floating_settings,
+            activity.findViewById(android.R.id.content) as ViewGroup, false)
     private val mPopup = PopupWindow(mView,
             (POPUP_WIDTH_DIP * activity.resources.displayMetrics.density).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT).apply {
