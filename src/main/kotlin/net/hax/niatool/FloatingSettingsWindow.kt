@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextSwitcher
 
-class FloatingSettings(activity: Activity) {
+class FloatingSettingsWindow(activity: Activity) {
 
     companion object {
         private val TAG = "FloatingSettings"
