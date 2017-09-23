@@ -5,6 +5,8 @@
     <string name="settings_caption_theme">Tema overlay</string>
     <string name="settings_caption_animations">Usa animazioni</string>
 
+    <string name="theme_overlay_default_title">Predefinito</string>
+
     <string name="overlay_permission_title">Autorizzazione richiesta</string>
     <string name="overlay_permission_message">Per poter funzionare, ho bisogno che tu mi dia l\'autorizzazione a
         posizionarmi sopra altre app.\n\nCliccando OK ti porterà alla pagina delle impostazioni dove potrai darmi questo
