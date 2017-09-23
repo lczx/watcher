@@ -14,8 +14,8 @@ class FloatingSettings(activity: Activity) {
         private val POPUP_WIDTH_DIP = 240
     }
 
-    private val view = activity.layoutInflater.inflate(R.layout.floating_settings, null)
-    private val popup = PopupWindow(view,
+    private val mView = activity.layoutInflater.inflate(R.layout.floating_settings, null)
+    private val mPopup = PopupWindow(mView,
             (POPUP_WIDTH_DIP * activity.resources.displayMetrics.density).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT).apply {
         setBackgroundDrawable(activity.resources.getDrawable(R.drawable.floating_settings_background, activity.theme))
@@ -29,10 +29,15 @@ class FloatingSettings(activity: Activity) {
     }
 
     init {
-        (view.findViewById(R.id.theme_selector) as TextSwitcher).setCurrentText("Placeholder")
+        (mView.findViewById(R.id.theme_selector) as TextSwitcher).setCurrentText("Placeholder")
     }
 
+    val isShowing: Boolean
+        get() = mPopup.isShowing
+
     fun showAtLocation(view: View, gravity: Int, x: Int, y: Int) =
-            popup.showAtLocation(view, gravity, x, y)
+            mPopup.showAtLocation(view, gravity, x, y)
+
+    fun dismiss() = mPopup.dismiss()
 
 }

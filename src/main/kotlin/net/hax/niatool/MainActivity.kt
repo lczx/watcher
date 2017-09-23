@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         private val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
     }
 
-    private val floatingSettings by lazy { FloatingSettings(this) }
+    private val floatingSettingsDelegate = lazy { FloatingSettings(this) }
+    private val floatingSettings by floatingSettingsDelegate
     private lateinit var mServiceToggleSwitch: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +87,11 @@ class MainActivity : AppCompatActivity() {
                     (4 * dp).toInt(), obtainStatusBarHeight(resources) + (4 * dp).toInt())
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (floatingSettingsDelegate.isInitialized() && floatingSettings.isShowing) floatingSettings.dismiss()
     }
 
     @TargetApi(Build.VERSION_CODES.M)
