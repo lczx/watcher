@@ -9,10 +9,16 @@
               android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:layout_columnWeight="0" android:layout_gravity="fill_horizontal"/>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:layout_columnWeight="1" android:layout_gravity="fill_horizontal"
-              android:layout_marginEnd="10dp" android:gravity="end"
-              android:text="Placeholder" android:textStyle="italic"/>
+    <FrameLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_columnWeight="1" android:layout_gravity="fill_horizontal"
+                 android:layout_marginEnd="10dp">
+
+        <net.hax.niatool.widget.SettingsTextSwitcher
+                android:id="@+id/theme_selector" android:layout_gravity="end"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:measureAllChildren="false"/>
+
+    </FrameLayout>
 
     <android.support.v4.widget.Space android:layout_columnSpan="2" android:layout_height="16dp"/>
 
@@ -24,7 +30,8 @@
     <FrameLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:layout_columnWeight="1" android:layout_gravity="fill_horizontal">
 
-        <Switch android:id="@+id/anim_toggle" android:layout_gravity="end"
+        <android.support.v7.widget.SwitchCompat
+                android:id="@+id/anim_toggle" android:layout_gravity="end"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
     </FrameLayout>

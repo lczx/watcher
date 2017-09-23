@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import android.widget.TextSwitcher
 
 class FloatingSettings(activity: Activity) {
 
@@ -25,6 +26,10 @@ class FloatingSettings(activity: Activity) {
             // TODO: Save settings here
             Log.i(TAG, "Dismissed")
         }
+    }
+
+    init {
+        (view.findViewById(R.id.theme_selector) as TextSwitcher).setCurrentText("Placeholder")
     }
 
     fun showAtLocation(view: View, gravity: Int, x: Int, y: Int) =
