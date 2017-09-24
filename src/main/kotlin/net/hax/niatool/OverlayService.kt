@@ -1,5 +1,6 @@
 package net.hax.niatool
 
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,6 +13,8 @@ import android.media.projection.MediaProjection
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
+import android.support.v4.app.NotificationCompat
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import net.hax.niatool.overlay.OverlayViewManager
 import net.hax.niatool.task.ScreenCaptureTask
@@ -64,6 +67,17 @@ class OverlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        startForeground(1339, NotificationCompat.Builder(baseContext)
+                .setContentTitle(resources.getString(R.string.notification_title))
+                .setContentText(resources.getStringArray(R.array.notification_text_random)
+                        .let { it[(System.nanoTime() % it.size).toInt()] })
+                .setColor(ContextCompat.getColor(baseContext, R.color.main_activity_color_etched))
+                .setSmallIcon(R.drawable.launch_screen_logo)
+                .setContentIntent(PendingIntent.getActivity(baseContext, 0,
+                        Intent(baseContext, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0))
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .build())
+
         instance = this
         overlayManager = OverlayViewManager(baseContext)
         overlayManager?.startOverlay()
@@ -74,6 +88,7 @@ class OverlayService : Service() {
         stopMediaProjection()
         overlayManager?.stopOverlay()
         overlayManager = null
+
         super.onDestroy()
     }
 

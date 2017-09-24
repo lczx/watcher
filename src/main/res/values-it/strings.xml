@@ -7,6 +7,17 @@
         posizionarmi sopra altre app.\n\nCliccando OK ti porterà alla pagina delle impostazioni dove potrai darmi questo
         permesso, grazie!
     </string>
+
+    <string name="notification_title">Overlay Watcher in esecuzione</string>
+    <string-array name="notification_text_random">
+        <item>\"Ai piccioni piace mangiare vetro perché pensano che li renda più forti\"</item>
+        <item>\"Tu sporco imbroglione…\"</item>
+        <item>\"…alimentato dalla forza di volontà di diecimila lama\"</item>
+        <item>\"…e sta silenziosamente prendendo controllo di ciò a cui stavi pensando 10 secondi fa\"</item>
+        <item>\"Aha! Mi hai letto!\"</item>
+        <item>\"Questo è un qualcosa qualcosa che sta facendo qualcosa\"</item>
+    </string-array>
+
     <string name="toast_service_toggle">Attiva o disattiva Overlay</string>
     <string name="toast_shot_taken">Schermata #%d catturata!</string>
     <string name="toast_shot_browse">%1$d su %2$d</string>

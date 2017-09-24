@@ -11,7 +11,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme.MainActivity.Launcher">
+        <activity android:name=".MainActivity" android:theme="@style/AppTheme.MainActivity.Launcher"
+                  android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

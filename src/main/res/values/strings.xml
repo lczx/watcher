@@ -8,6 +8,17 @@
     <string name="overlay_permission_message">In order to function, I need you to give me the permission to draw over
         other apps.\n\nClicking OK will show the settings page where you can authorize me to do that, thanks!
     </string>
+
+    <string name="notification_title">Watcher overlay is running</string>
+    <string-array name="notification_text_random">
+        <item>\"Pigeons like to eat glass because it makes their think they are stronger\"</item>
+        <item>\"You filthy cheater…\"</item>
+        <item>\"…powered by the willingness of ten thousand llamas\"</item>
+        <item>\"…and is silently taking control of what you where thinking ten seconds ago\"</item>
+        <item>\"Aha! You read me!\"</item>
+        <item>\"This is something something that is doing something\"</item>
+    </string-array>
+
     <string name="toast_service_toggle">Toggle Overlay</string>
     <string name="toast_shot_taken">Shot #%d taken!</string>
     <string name="toast_shot_browse">%1$d of %2$d</string>
