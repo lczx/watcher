@@ -7,6 +7,8 @@
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
 
+        <item name="colorAlternate">@color/color_alt</item>
+
         <item name="android:toolbarStyle">@style/Widget.App.Toolbar</item>
     </style>
 

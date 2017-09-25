@@ -5,6 +5,8 @@
     <color name="color_primary_dark">#b71c1c</color> <!-- Material Red 900 -->
     <color name="color_accent">#ffc107</color> <!-- Material Amber 500 -->
 
+    <color name="color_alt">#0288D1</color> <!-- Material Light Blue 700 -->
+
     <color name="main_activity_color_etched">#777</color>
     <color name="main_activity_color_status_bar">#222</color>
 

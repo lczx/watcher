@@ -3,8 +3,13 @@
 
     <!-- Additional attributes for application-defined widgets -->
 
+    <!--  net.hax.niatool.widget.DispatcherLayout -->
     <attr name="dispatcherRegions" format="reference"/>
 
+    <!-- Used by shape_chip (new version chip) -->
+    <attr name="colorAlternate" format="color"/>
+
+    <!-- Overlay styleable attributes -->
     <declare-styleable name="OverlayController">
         <attr name="colorFrame" format="color"/>
         <attr name="colorIcon" format="color"/>
