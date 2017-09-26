@@ -39,7 +39,7 @@
     <android.support.v4.widget.Space android:layout_columnSpan="2" android:layout_height="16dp"/>
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-              android:gravity="center_horizontal"
-              android:layout_columnSpan="2" android:text="Not implemented (yet)" android:textStyle="italic"/>
+              android:gravity="center_horizontal" android:layout_columnSpan="2"
+              android:text="🐐 + ⛤ = 🤘" android:textStyle="italic"/>
 
 </GridLayout>
