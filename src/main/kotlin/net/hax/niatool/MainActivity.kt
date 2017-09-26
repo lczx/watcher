@@ -24,6 +24,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import net.hax.niatool.updater.UpdateData
+import net.hax.niatool.updater.UpdateManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,6 +63,9 @@ class MainActivity : AppCompatActivity() {
         // Version note configuration
         (findViewById(R.id.version_note) as TextView).text =
                 getString(R.string.text_version_note, packageManager.getPackageInfo(packageName, 0).versionName)
+
+        // Check for updates
+        UpdateManager(this, this::onApplicationUpdate).run()
     }
 
     override fun onStart() {
@@ -130,6 +135,23 @@ class MainActivity : AppCompatActivity() {
     private fun stopOverlay() {
         Log.d(TAG, "Stopping overlay service")
         stopService(Intent(this, OverlayService::class.java))
+    }
+
+    private fun onApplicationUpdate(updateManager: UpdateManager, update: UpdateData) {
+        val newVersionChip = findViewById(R.id.version_new)
+        newVersionChip.visibility = View.VISIBLE
+        newVersionChip.setOnClickListener {
+            val alert = AlertDialog.Builder(this).setTitle("Update available")
+            if (updateManager.canDownload) {
+                alert.setMessage("An update to version ${update.version.pretty} is available, do you want to download it now?")
+                        .setNegativeButton("Not now", null)
+                        .setPositiveButton("Yes", null)
+            } else {
+                alert.setMessage("An update to version ${update.version.pretty} is available, please go online to update.")
+                        .setPositiveButton(android.R.string.ok, null)
+            }
+            alert.show()
+        }
     }
 
     private fun calculateSwitchTipLocation(v: View): Point {
