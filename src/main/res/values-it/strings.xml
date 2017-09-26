@@ -12,6 +12,17 @@
     <string name="toast_shot_browse">%1$d su %2$d</string>
     <string name="text_version_note" formatted="true">Versione %s</string>
     <string name="chip_new_version_available">Nuova disponibile!</string>
+    <string name="dialog_update_title">Aggiornamento disponibile</string>
+    <string name="dialog_update_text" formatted="true">È disponibile un aggiornamento alla versione %s, vuoi scaricarla
+        adesso?
+    </string>
+    <string name="dialog_update_text_offline" formatted="true">È disponibile un aggiornamento alla versione %s, vai
+        online per aggiornare.
+    </string>
+    <string name="dialog_update_button_yes">Sì</string>
+    <string name="dialog_update_button_no">Non ora</string>
+    <string name="notification_update_download_title">Download dell\'aggiornamento di Watcher</string>
+    <string name="notification_update_download_description" formatted="true">Versione %s</string>
     <string name="alert_prerelease_title">Versione sperimentale!</string>
     <string name="alert_prerelease_text">Questa è una <b>versione pre-release di Watcher</b> e quindi è molto probabile
         che non funzioni come dovrebbe o che faccia cose strane al tuo dispositivo, <i>sei stato/a avvertito/a</i>!

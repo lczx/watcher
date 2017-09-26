@@ -142,15 +142,15 @@ class MainActivity : AppCompatActivity() {
         val newVersionChip = findViewById(R.id.version_new)
         newVersionChip.visibility = View.VISIBLE
         newVersionChip.setOnClickListener {
-            val alert = AlertDialog.Builder(this).setTitle("Update available")
+            val alert = AlertDialog.Builder(this).setTitle(R.string.dialog_update_title)
             if (updateManager.canDownload) {
-                alert.setMessage("An update to version ${update.version.pretty} is available, do you want to download it now?")
-                        .setNegativeButton("Not now", null)
-                        .setPositiveButton("Yes", { _, _ ->
+                alert.setMessage(getString(R.string.dialog_update_text, update.version.pretty))
+                        .setNegativeButton(R.string.dialog_update_button_no, null)
+                        .setPositiveButton(R.string.dialog_update_button_yes, { _, _ ->
                             UpdateInstaller(this).downloadAndInstall(update)
                         })
             } else {
-                alert.setMessage("An update to version ${update.version.pretty} is available, please go online to update.")
+                alert.setMessage(getString(R.string.dialog_update_text_offline, update.version.pretty))
                         .setPositiveButton(android.R.string.ok, null)
             }
             alert.show()

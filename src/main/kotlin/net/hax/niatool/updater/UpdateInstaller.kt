@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import net.hax.niatool.R
 import java.io.File
 
 class UpdateInstaller(val context: Context) {
@@ -29,8 +30,8 @@ class UpdateInstaller(val context: Context) {
         // Try to download (note: we can make the request to be handled only on wifi)
         Log.d(TAG, "Starting update download, source: \"${update.downloadURL}")
         val downloadId = downloadManager.enqueue(DownloadManager.Request(Uri.parse(update.downloadURL))
-                .setTitle("Downloading Watcher update")
-                .setDescription("Version ${update.version.pretty}")
+                .setTitle(context.getString(R.string.notification_update_download_title))
+                .setDescription(context.getString(R.string.notification_update_download_description, update.version.pretty))
                 .setDestinationUri(Uri.fromFile(destination))
                 .setVisibleInDownloadsUi(false))
 
