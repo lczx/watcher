@@ -9,8 +9,12 @@ to the center square of the screen and kept in memory.
 
 ### Why?
 
+First of all, this is a way for myself to (try to) develop a proper,
+although useless, Android application; hopefully learning new things in the
+meantime.
+
 This was made for some people I know that play a game named *Ingress*,
-if you are frustrated by "Gliph Hacking" this may be for you.
+if you are frustrated by "Glyph Hacking" this may be for you.
 
 It is needless to say that this surely violates the game's EULA, in
 fact they might ban your account or better, `FLAG_SECURE` their content
