@@ -25,6 +25,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import net.hax.niatool.updater.UpdateData
+import net.hax.niatool.updater.UpdateInstaller
 import net.hax.niatool.updater.UpdateManager
 
 class MainActivity : AppCompatActivity() {
@@ -145,7 +146,9 @@ class MainActivity : AppCompatActivity() {
             if (updateManager.canDownload) {
                 alert.setMessage("An update to version ${update.version.pretty} is available, do you want to download it now?")
                         .setNegativeButton("Not now", null)
-                        .setPositiveButton("Yes", null)
+                        .setPositiveButton("Yes", { _, _ ->
+                            UpdateInstaller(this).downloadAndInstall(update)
+                        })
             } else {
                 alert.setMessage("An update to version ${update.version.pretty} is available, please go online to update.")
                         .setPositiveButton(android.R.string.ok, null)
