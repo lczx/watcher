@@ -9,14 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.R
 import net.hax.niatool.onEnd
 
 class ControlPanelOverlay(private val context: Context, private val commandListener: OnCommandListener? = null) {
-
-    companion object {
-        private val USE_ANIMATIONS = true
-    }
 
     private val uiHandler = Handler(Looper.getMainLooper())
     private val mViewCapture = createView(R.layout.overlay_ctrl_capture)
@@ -55,7 +52,7 @@ class ControlPanelOverlay(private val context: Context, private val commandListe
     }
 
     private fun switchViews(nextView: View) {
-        if (!USE_ANIMATIONS) {
+        if (!ApplicationSettings.animationsEnabled) {
             viewport.removeAllViews()
             viewport.addView(nextView)
             return

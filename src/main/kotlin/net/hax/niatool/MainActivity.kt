@@ -32,10 +32,13 @@ class MainActivity : AppCompatActivity() {
         private val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
     }
 
+    private val floatingSettingsWindowDelegate = lazy { FloatingSettingsWindow(this) }
+    private val floatingSettingsWindow by floatingSettingsWindowDelegate
     private lateinit var mServiceToggleSwitch: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ApplicationSettings.initialize(applicationContext)
         setTheme(R.style.AppTheme_MainActivity) // Get rid of the launcher theme
         setContentView(R.layout.activity_main)
 
@@ -79,9 +82,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.open_settings)
-            Toast.makeText(this, "Not implemented (yet)", Toast.LENGTH_SHORT).show()
+        if (item!!.itemId == R.id.open_settings) {
+            val dp = resources.displayMetrics.density
+            floatingSettingsWindow.showAtLocation(findViewById(R.id.open_settings), Gravity.TOP or GravityCompat.END,
+                    (4 * dp).toInt(), obtainStatusBarHeight(resources) + (4 * dp).toInt())
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (floatingSettingsWindowDelegate.isInitialized() && floatingSettingsWindow.isShowing)
+            floatingSettingsWindow.dismiss()
     }
 
     @TargetApi(Build.VERSION_CODES.M)
