@@ -84,6 +84,13 @@
         <item name="colorButtonForward">@android:color/transparent</item>
     </style>
 
+    <style name="OverlayCtrl.KahifrexGreen">
+        <item name="colorFrame">@color/overlay_ctrl_frame_kahifrex_green</item>
+        <item name="colorIcon">@color/overlay_ctrl_icon_kahifrex_green</item>
+        <item name="colorButtonCapture">@android:color/transparent</item>
+        <item name="colorButtonBack">@android:color/transparent</item>
+        <item name="colorButtonForward">@android:color/transparent</item>
+    </style>
 
     <!-- Settings menu animation -->
     <style name="Animation.App.DropUpRightDownLeft" parent="android:Animation">

@@ -16,4 +16,8 @@
     <color name="overlay_ctrl_frame_kahifrex">#70ffffff</color>
     <color name="overlay_ctrl_icon_kahifrex">#44ffffff</color>
 
+    <!-- Overlay controller - Kahifrex's enlightenment theme -->
+    <color name="overlay_ctrl_frame_kahifrex_green">#7000ffaa</color>
+    <color name="overlay_ctrl_icon_kahifrex_green">#4400ffaa</color>
+
 </resources>

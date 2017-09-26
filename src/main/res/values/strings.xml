@@ -9,6 +9,7 @@
 
     <string name="theme_overlay_default_title">Default</string>
     <string name="theme_overlay_kahifrex_title" translatable="false">Kahimar</string>
+    <string name="theme_overlay_kahifrex_green_title" translatable="false">Kahifrex\'s Enlightenment</string>
 
     <string name="overlay_permission_title">Permission required</string>
     <string name="overlay_permission_message">In order to function, I need you to give me the permission to draw over

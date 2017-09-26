@@ -10,19 +10,21 @@ object ApplicationSettings {
 
     private val TAG = "ApplicationSettings"
 
-    val PREF_USE_ANIMATIONS_KEY = "use_animations"
-    val PREF_USE_ANIMATIONS_DEFAULT = true
+    private val PREF_USE_ANIMATIONS_KEY = "use_animations"
+    private val PREF_USE_ANIMATIONS_DEFAULT = true
 
-    val PREF_OVERLAY_THEME_KEY = "overlay_theme"
-    val PREF_OVERLAY_THEME_DEFAULT = "OverlayCtrl.Default"
+    private val PREF_OVERLAY_THEME_KEY = "overlay_theme"
+    private val PREF_OVERLAY_THEME_DEFAULT = "OverlayCtrl.Default"
 
-    val OVERLAY_THEME_IDS = intArrayOf(
+    private val OVERLAY_THEME_IDS = intArrayOf(
             R.style.OverlayCtrl_Default,
-            R.style.OverlayCtrl_Kahifrex)
+            R.style.OverlayCtrl_Kahifrex,
+            R.style.OverlayCtrl_KahifrexGreen)
 
     val OVERLAY_THEME_NAMES = intArrayOf(
             R.string.theme_overlay_default_title,
-            R.string.theme_overlay_kahifrex_title)
+            R.string.theme_overlay_kahifrex_title,
+            R.string.theme_overlay_kahifrex_green_title)
 
     var overlayThemeIndex: Int = -1
     var animationsEnabled: Boolean = false
@@ -62,7 +64,7 @@ object ApplicationSettings {
         var themeStyleName = applicationPreferences.getString(PREF_OVERLAY_THEME_KEY, PREF_OVERLAY_THEME_DEFAULT)
 
         // Then we get the resource id of that theme
-        @StyleRes var themeId = applicationContext.resources.getIdentifier(
+        @StyleRes var themeId: Int = applicationContext.resources.getIdentifier(
                 themeStyleName, "style", applicationContext.packageName)
 
         // If we failed, and that was not the default theme, fallback to default

@@ -12,7 +12,7 @@ class FloatingSettingsWindow(activity: Activity) {
 
     companion object {
         private val TAG = "FloatingSettings"
-        private val POPUP_WIDTH_DIP = 240
+        private val POPUP_WIDTH_DIP = 260
     }
 
     private val mView = activity.layoutInflater.inflate(R.layout.floating_settings,
