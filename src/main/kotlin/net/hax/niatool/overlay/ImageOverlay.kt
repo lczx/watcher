@@ -18,6 +18,7 @@ class ImageOverlay(private val context: Context) {
     companion object {
         private val TAG = "ImageOverlay"
         private val TRANSITION_DURATION_MS = 150
+        private val OVERLAY_ALPHA = .6f // TODO: We may want to make this a setting
     }
 
     private val indexToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
@@ -28,7 +29,7 @@ class ImageOverlay(private val context: Context) {
 
     val viewport: ImageView = ImageView(context).apply {
         visibility = View.INVISIBLE
-        alpha = .4f
+        alpha = OVERLAY_ALPHA
     }
 
     var visible: Boolean
