@@ -61,12 +61,20 @@ class MainActivity : AppCompatActivity() {
             if (isChecked) attemptStartOverlay() else stopOverlay()
         }
 
-        // Version note configuration
-        (findViewById(R.id.version_note) as TextView).text =
-                getString(R.string.text_version_note, packageManager.getPackageInfo(packageName, 0).versionName)
+        // Version note & long-click force update
+        val updateManger = UpdateManager(this, this::onApplicationUpdate)
+        with(findViewById(R.id.version_note) as TextView) {
+            val currentVersion = packageManager.getPackageInfo(packageName, 0).versionName
+            text = getString(R.string.text_version_note, currentVersion)
+            setOnLongClickListener {
+                Toast.makeText(this@MainActivity, R.string.toast_version_check_force, Toast.LENGTH_SHORT).show()
+                updateManger.run(force = true)
+                true
+            }
+        }
 
         // Check for updates
-        UpdateManager(this, this::onApplicationUpdate).run()
+        updateManger.run()
     }
 
     override fun onStart() {

@@ -35,8 +35,8 @@ class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager,
             it?.isConnected == true && (!UPDATE_ONLY_ON_WIFI || it.type == ConnectivityManager.TYPE_WIFI)
         }
 
-    fun run() {
-        if (shouldCheckForUpdate()) {
+    fun run(force: Boolean = false) {
+        if (force || shouldCheckForUpdate()) {
             Log.d(TAG, "It is time to check for updates!")
             UpdaterTask().execute(RELEASE_ENDPOINT_URI)
         } else {
