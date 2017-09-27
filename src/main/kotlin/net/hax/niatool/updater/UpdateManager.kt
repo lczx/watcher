@@ -3,6 +3,7 @@ package net.hax.niatool.updater
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import net.hax.niatool.BuildConfig
 
 class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager, UpdateData) -> Unit)? = null) {
 
@@ -12,8 +13,8 @@ class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager,
         private val PREF_LAST_UPDATE_CHECK_KEY = "last_update_check_time"
         private val PREF_LAST_UPDATE_CHECK_DEFAULT = 0L
 
-        //private val RELEASE_ENDPOINT_URI = "https://api.github.com/repos/lczx/watcher/releases/latest"
-        private val RELEASE_ENDPOINT_URI = "http://prime.lan/latest.json"
+        private val RELEASE_ENDPOINT_URI = if (BuildConfig.DEBUG)
+            "http://prime.lan/latest.json" else "https://api.github.com/repos/lczx/watcher/releases/latest"
 
         // TODO: We may want let the user configure these
         // For now, since this app will primarily be used on the go, it is pointless to check for updates on WiFi
