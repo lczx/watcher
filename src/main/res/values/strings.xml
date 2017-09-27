@@ -30,6 +30,19 @@
     <string name="toast_shot_taken">Shot #%d taken!</string>
     <string name="toast_shot_browse">%1$d of %2$d</string>
     <string name="text_version_note" formatted="true">Version %s</string>
+    <string name="toast_version_check_force">Checking for updates…</string>
+    <string name="chip_new_version_available">New available!</string>
+    <string name="dialog_update_title">Update available</string>
+    <string name="dialog_update_text" formatted="true">An update to version %s is available, do you want to download it
+        now?
+    </string>
+    <string name="dialog_update_text_offline" formatted="true">An update to version %s is available, please go online to
+        update.
+    </string>
+    <string name="dialog_update_button_yes">Yes</string>
+    <string name="dialog_update_button_no">Not now</string>
+    <string name="notification_update_download_title">Downloading Watcher update</string>
+    <string name="notification_update_download_description" formatted="true">Version %s</string>
     <string name="alert_prerelease_title">Experimental version!</string>
     <string name="alert_prerelease_text">This is a <b>pre-release version of Watcher</b> and thus is very likely to
         misbehave and do weird things to your device, <i>you have been warned</i>!
