@@ -1,7 +1,11 @@
-# Watcher
+<p align="center"><img src="src/main/ic_launcher-web.png" width="200"/></p> 
+<h1 align="center">Watcher</h2>
+<h4 align="center"><i>A crippled screenshot utility for Android that can't even save the captured images</i></h4>
 
-*A crippled screenshot utility for Android
-that can't even save the captured images*
+<p align="center">
+<a href="https://github.com/lczx/watcher" alt="GitHub release"><img src="https://img.shields.io/github/release/lczx/watcher.svg" /></a>
+<a href="https://opensource.org/licenses/MIT" alt="License: MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" /></a>
+</p>
 
 **Watcher** shows an overlay on the screen that you can use to capture
 snapshots using the Android MediaProjection API, the images are cropped
