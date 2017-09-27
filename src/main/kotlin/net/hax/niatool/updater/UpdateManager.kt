@@ -37,7 +37,7 @@ class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager,
 
     fun run(force: Boolean = false) {
         if (force || shouldCheckForUpdate()) {
-            Log.d(TAG, "It is time to check for updates!")
+            Log.d(TAG, "Fetching latest release metadata...")
             UpdaterTask().execute(RELEASE_ENDPOINT_URI)
         } else {
             Log.d(TAG, "Better stay offline and check if we remember about an available update...")
@@ -46,10 +46,18 @@ class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager,
     }
 
     private fun shouldCheckForUpdate(): Boolean {
-        return true // TODO REMOVE
+        if (!canDownload) {
+            Log.d(TAG, "Shouldn't check for update: offline or wrong network type")
+            return false
+        }
 
-        if (!canDownload) return false
-        return (System.currentTimeMillis() - lastUpdateCheckTime) > UPDATE_CHECK_INTERVAL_MS
+        if ((System.currentTimeMillis() - lastUpdateCheckTime) < UPDATE_CHECK_INTERVAL_MS) {
+            Log.d(TAG, "Shouldn't check for update: not enough time passed since last check")
+            return false
+        }
+
+        Log.d(TAG, "It is time to check for updates!")
+        return true
     }
 
     private fun isUpdate(updateData: UpdateData): Boolean {
