@@ -45,7 +45,7 @@ class OverlayViewManager(private val context: Context) {
             height = WindowManager.LayoutParams.WRAP_CONTENT
             x = 0
             y = 200
-            type = WindowManager.LayoutParams.TYPE_PHONE
+            type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
             flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.LEFT
