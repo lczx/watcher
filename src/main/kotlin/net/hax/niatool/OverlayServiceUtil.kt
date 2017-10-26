@@ -1,6 +1,6 @@
 package net.hax.niatool
 
-import android.media.projection.MediaProjection
+import android.content.Intent
 import android.os.Message
 
 object OverlayServiceUtil {
@@ -8,8 +8,8 @@ object OverlayServiceUtil {
     fun setArmed(armed: Boolean) =
             sendMessageToService(OverlayService.MESSAGE_ARMED_STATE_CHANGED, armed)
 
-    fun setMediaProjection(mediaProjection: MediaProjection?) =
-            sendMessageToService(OverlayService.MESSAGE_SET_MEDIA_PROJECTION, mediaProjection)
+    fun setMediaProjectionIntent(data: Intent?) =
+            sendMessageToService(OverlayService.MESSAGE_SET_MEDIA_PROJECTION_INTENT, data)
 
     fun captureScreen() =
             OverlayService.handler.sendEmptyMessage(OverlayService.MESSAGE_CAPTURE_SCREEN)

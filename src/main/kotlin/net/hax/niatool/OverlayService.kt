@@ -1,7 +1,9 @@
 package net.hax.niatool
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
@@ -10,6 +12,7 @@ import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
 import android.media.projection.MediaProjection
+import android.media.projection.MediaProjectionManager
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
@@ -26,7 +29,7 @@ class OverlayService : Service() {
 
     companion object {
         val MESSAGE_ARMED_STATE_CHANGED = 0
-        val MESSAGE_SET_MEDIA_PROJECTION = 1
+        val MESSAGE_SET_MEDIA_PROJECTION_INTENT = 1
         val MESSAGE_CAPTURE_SCREEN = 2
 
         val handler = ServiceHandler()
@@ -47,8 +50,10 @@ class OverlayService : Service() {
                             instance!!.initializeMediaProjection()
                         else
                             instance!!.stopMediaProjection()
-                    MESSAGE_SET_MEDIA_PROJECTION ->
-                        instance!!.onMediaProjectionAvailable(msg.obj as MediaProjection?)
+                    MESSAGE_SET_MEDIA_PROJECTION_INTENT -> {
+                        instance!!.mediaProjectionIntent = msg.obj as Intent?
+                        instance!!.initializeMediaProjection()
+                    }
                     MESSAGE_CAPTURE_SCREEN ->
                         instance!!.takeShot()
                 }
@@ -57,6 +62,7 @@ class OverlayService : Service() {
     }
 
     private var overlayManager: OverlayViewManager? = null
+    private var mediaProjectionIntent: Intent? = null
     private var mediaProjection: MediaProjection? = null
     private var virtualDisplay: VirtualDisplay? = null
     private var imageReader: ImageReader? = null
@@ -93,7 +99,13 @@ class OverlayService : Service() {
     }
 
     private fun initializeMediaProjection() {
-        launchActivityFromOverlay(this, CaptureRequestActivity::class.java)
+        if (mediaProjectionIntent == null)
+            launchActivityFromOverlay(this, CaptureRequestActivity::class.java)
+        else {
+            val projectionManager = baseContext.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+            val mediaProjection = projectionManager.getMediaProjection(Activity.RESULT_OK, mediaProjectionIntent)
+            instance!!.onMediaProjectionAvailable(mediaProjection)
+        }
     }
 
     private fun stopMediaProjection() {

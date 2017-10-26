@@ -29,7 +29,11 @@ class CaptureRequestActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_CODE_SCREEN_CAPTURE) {
             finish() // Call this first to avoid strange screen flickering on activity dismiss
-            OverlayServiceUtil.setMediaProjection(projectionManager.getMediaProjection(resultCode, data))
+            if (resultCode == AppCompatActivity.RESULT_OK) {
+                // Same check is done in MediaProjectionManager#getMediaProjection() by the API,
+                // but we do it here to avoid passing more parameters around
+                OverlayServiceUtil.setMediaProjectionIntent(data)
+            }
 
             // We don't need to check resultCode: getMediaProjection returns null if not RESULT_OK
             Log.d(TAG, "Got screen capture permission result")
