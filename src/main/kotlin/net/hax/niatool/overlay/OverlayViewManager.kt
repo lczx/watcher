@@ -20,6 +20,11 @@ class OverlayViewManager(private val context: Context) {
     companion object {
         private val TAG = "OverlayManager"
 
+        private val LAYOUT_FLAGS_DEFAULT =
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        private val LAYOUT_FLAGS_FOCUSABLE =
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+
         // WindowManager.LayoutParams - Types
         //   - TYPE_SYSTEM_OVERLAY: Touch events pass through, which cannot be intercepted
         //   - TYPE_SYSTEM_ERROR:   Can be placed over the status bar, also visible from the lock screen
@@ -35,26 +40,26 @@ class OverlayViewManager(private val context: Context) {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
             type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
-            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            flags = LAYOUT_FLAGS_DEFAULT
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.CENTER  // This may look weird on Essential Phone :D
         }
-        @SuppressLint("RtlHardcoded")
         private val LAYOUT_PARAMS_CONTROL_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
             x = 0
             y = 200
             type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
-            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            flags = LAYOUT_FLAGS_DEFAULT // Switches to LAYOUT_FLAGS_FOCUSABLE on mode change
             format = PixelFormat.TRANSLUCENT
+            @SuppressLint("RtlHardcoded")
             gravity = Gravity.TOP or Gravity.LEFT
         }
         private val LAYOUT_PARAMS_IMAGE_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.MATCH_PARENT
             height = WindowManager.LayoutParams.MATCH_PARENT
             type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
-            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            flags = LAYOUT_FLAGS_DEFAULT
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.CENTER
         }
@@ -116,6 +121,10 @@ class OverlayViewManager(private val context: Context) {
         override fun onModeChanged(inBrowseMode: Boolean) {
             imageOverlay!!.visible = inBrowseMode
             if (!inBrowseMode) imageOverlay!!.recycleAll()
+
+            // Allow overlay to get hardware key events in browse mode
+            LAYOUT_PARAMS_CONTROL_OVERLAY.flags = if (inBrowseMode) LAYOUT_FLAGS_FOCUSABLE else LAYOUT_FLAGS_DEFAULT
+            windowManager.updateViewLayout(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
         }
 
         override fun onCaptureScreenCommand() {

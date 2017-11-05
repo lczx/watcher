@@ -8,6 +8,7 @@ import android.support.annotation.AttrRes
 import android.support.annotation.StyleRes
 import android.util.AttributeSet
 import android.util.Log
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import net.hax.niatool.R
@@ -39,6 +40,9 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
         // We are using this instead of a styleable because there are no reasons to make this styleable
         private val CUSTOM_ATTRS = intArrayOf(R.attr.dispatcherRegions)
     }
+
+    // This is only used by ControlPanelOverlay to listen on volume controls, can return null to invoke super
+    var onDispatchKeyHandler: ((event: KeyEvent?) -> Boolean?)? = null
 
     private val mDensity = resources.displayMetrics.density
     private val mRegions: List<Region>
@@ -88,7 +92,9 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
         if (mCurrentGestureViewIdx != -1 && !mRegions[mCurrentGestureViewIdx].contains(posX, posY)) {
             val prevAction = ev.action
             ev.action = MotionEvent.ACTION_CANCEL
-            getChildAt(mCurrentGestureViewIdx).dispatchTouchEvent(ev)
+            val target = getChildAt(mCurrentGestureViewIdx)
+            target.requestFocusFromTouch()
+            target.dispatchTouchEvent(ev)
             ev.action = prevAction
             mCurrentGestureViewIdx = -1
         }
@@ -112,6 +118,7 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
         val offsetX = (scrollX - view.left).toFloat()
         val offsetY = (scrollY - view.top).toFloat()
         ev.offsetLocation(offsetX, offsetY)
+        view.requestFocusFromTouch()
         view.dispatchTouchEvent(ev)
         ev.offsetLocation(-offsetX, -offsetY)
         return true
@@ -124,5 +131,8 @@ class DispatcherLayout(context: Context, attrs: AttributeSet?, @AttrRes defStyle
         else if (childCount < mRegions.size)
             Log.w(TAG, "View count is lower than region count, exceeding paths will always be ignored")
     }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean =
+            onDispatchKeyHandler?.invoke(event) ?: super.dispatchKeyEvent(event)
 
 }
