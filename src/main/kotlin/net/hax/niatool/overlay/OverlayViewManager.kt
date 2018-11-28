@@ -5,24 +5,22 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.support.v7.view.ContextThemeWrapper
-import android.util.Log
 import android.view.Gravity
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.OverlayServiceUtil
-import net.hax.niatool.R
 import net.hax.niatool.calculateControlToastYOffset
 
-class OverlayViewManager(private val context: Context) {
+abstract class OverlayViewManager(protected val context: Context) {
 
     companion object {
-        private val TAG = "OverlayManager"
-
-        private val LAYOUT_FLAGS_DEFAULT =
+        @JvmStatic
+        protected val LAYOUT_FLAGS_DEFAULT =
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-        private val LAYOUT_FLAGS_FOCUSABLE =
+
+        @JvmStatic
+        protected val LAYOUT_FLAGS_FOCUSABLE =
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
 
         // WindowManager.LayoutParams - Types
@@ -36,6 +34,7 @@ class OverlayViewManager(private val context: Context) {
         //   - FLAG_NOT_FOCUSABLE:       Allows button presses to pass through (includes FLAG_NOT_TOUCH_MODAL)
         //   - FLAG_WATCH_OUTSIDE_TOUCH: Can get touch events outside own area as ACTION_OUTSIDE
         //   - FLAG_LAYOUT_IN_SCREEN:    Can be drawn over the status bar
+        @JvmStatic
         private val LAYOUT_PARAMS_STATUS_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
@@ -44,7 +43,8 @@ class OverlayViewManager(private val context: Context) {
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.CENTER  // This may look weird on Essential Phone :D
         }
-        private val LAYOUT_PARAMS_CONTROL_OVERLAY = WindowManager.LayoutParams().apply {
+        @JvmStatic
+        protected val LAYOUT_PARAMS_CONTROL_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
             x = 0
@@ -55,33 +55,24 @@ class OverlayViewManager(private val context: Context) {
             @SuppressLint("RtlHardcoded")
             gravity = Gravity.TOP or Gravity.LEFT
         }
-        private val LAYOUT_PARAMS_IMAGE_OVERLAY = WindowManager.LayoutParams().apply {
-            width = WindowManager.LayoutParams.MATCH_PARENT
-            height = WindowManager.LayoutParams.MATCH_PARENT
-            type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
-            flags = LAYOUT_FLAGS_DEFAULT
-            format = PixelFormat.TRANSLUCENT
-            gravity = Gravity.CENTER
-        }
     }
 
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
+    private var statusOverlay: StatusPanelOverlay? = null
+    protected var controlOverlay: ControlPanelOverlay2? = null
+
+    protected val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
         setGravity(Gravity.CENTER, 0, calculateControlToastYOffset(context))
     }
-    private var statusOverlay: StatusPanelOverlay? = null
-    private var controlOverlay: ControlPanelOverlay? = null
-    private var imageOverlay: ImageOverlay? = null
 
     fun startOverlay() {
         statusOverlay = StatusPanelOverlay(context, ArmedStatusListener())
         windowManager.addView(statusOverlay!!.viewport, LAYOUT_PARAMS_STATUS_OVERLAY)
     }
 
-    fun onProjectionStart() {
-        imageOverlay = ImageOverlay(context)
-        windowManager.addView(imageOverlay!!.viewport, LAYOUT_PARAMS_IMAGE_OVERLAY)
-        controlOverlay = ControlPanelOverlay(ContextThemeWrapper(context, ApplicationSettings.overlayTheme), CommandListener())
+    open fun onProjectionStart() {
+        controlOverlay = ControlPanelOverlay2(ContextThemeWrapper(context, ApplicationSettings.overlayTheme))
+        configureControlOverlay(controlOverlay!!)
         windowManager.addView(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
     }
 
@@ -90,13 +81,10 @@ class OverlayViewManager(private val context: Context) {
         statusOverlay!!.armed = false
     }
 
-    fun onProjectionStop() {
+    open fun onProjectionStop() {
         assert(controlOverlay != null, { "onProjectionStop() should not be called before onProjectionStart()" })
-        imageOverlay!!.recycleAll()
         windowManager.removeView(controlOverlay!!.viewport)
         controlOverlay = null
-        windowManager.removeView(imageOverlay!!.viewport)
-        imageOverlay = null
     }
 
     fun stopOverlay() {
@@ -105,42 +93,13 @@ class OverlayViewManager(private val context: Context) {
         statusOverlay = null
     }
 
-    fun onImageAvailable(bitmap: Bitmap) {
-        imageOverlay!!.addImage(bitmap)
-        shotToast.setText(context.getString(R.string.toast_shot_taken, imageOverlay!!.imageCount))
-        shotToast.show()
-    }
+    abstract fun onImageAvailable(bitmap: Bitmap)
+
+    abstract fun configureControlOverlay(controlOverlay: ControlPanelOverlay2)
 
     class ArmedStatusListener : StatusPanelOverlay.OnArmedStatusListener {
         override fun onArmedStatusChange(armed: Boolean) {
             OverlayServiceUtil.setArmed(armed)
-        }
-    }
-
-    inner class CommandListener : ControlPanelOverlay.OnCommandListener {
-        override fun onModeChanged(inBrowseMode: Boolean) {
-            imageOverlay!!.visible = inBrowseMode
-            if (!inBrowseMode) imageOverlay!!.recycleAll()
-
-            // Allow overlay to get hardware key events in browse mode
-            LAYOUT_PARAMS_CONTROL_OVERLAY.flags = if (inBrowseMode) LAYOUT_FLAGS_FOCUSABLE else LAYOUT_FLAGS_DEFAULT
-            windowManager.updateViewLayout(controlOverlay!!.viewport, LAYOUT_PARAMS_CONTROL_OVERLAY)
-        }
-
-        override fun onCaptureScreenCommand() {
-            OverlayServiceUtil.captureScreen()
-        }
-
-        override fun onBrowseBackCommand() {
-            if (imageOverlay?.viewport?.visibility != View.VISIBLE)
-                Log.w(TAG, "Flow warning: should not be possible to browse if control & image overlays are hidden")
-            imageOverlay?.previousImage()
-        }
-
-        override fun onBrowseForwardCommand() {
-            if (imageOverlay?.viewport?.visibility != View.VISIBLE)
-                Log.w(TAG, "Flow warning: should not be possible to browse if control & image overlays are hidden")
-            imageOverlay?.nextImage()
         }
     }
 

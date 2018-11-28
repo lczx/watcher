@@ -19,6 +19,7 @@ import android.os.Message
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import net.hax.niatool.modes.glyph.GlyphOverlayManager
 import net.hax.niatool.overlay.OverlayViewManager
 import net.hax.niatool.task.ScreenCaptureTask
 
@@ -28,9 +29,9 @@ import net.hax.niatool.task.ScreenCaptureTask
 class OverlayService : Service() {
 
     companion object {
-        val MESSAGE_ARMED_STATE_CHANGED = 0
-        val MESSAGE_SET_MEDIA_PROJECTION_INTENT = 1
-        val MESSAGE_CAPTURE_SCREEN = 2
+        const val MESSAGE_ARMED_STATE_CHANGED = 0
+        const val MESSAGE_SET_MEDIA_PROJECTION_INTENT = 1
+        const val MESSAGE_CAPTURE_SCREEN = 2
 
         val handler = ServiceHandler()
 
@@ -85,7 +86,7 @@ class OverlayService : Service() {
                 .build())
 
         instance = this
-        overlayManager = OverlayViewManager(baseContext)
+        overlayManager = GlyphOverlayManager(baseContext)
         overlayManager?.startOverlay()
     }
 
