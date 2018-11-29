@@ -55,7 +55,6 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         controlOverlay.addScene(ControlCaptureScene { OverlayServiceUtil.captureScreen() })
         controlOverlay.addScene(ControlBrowseScene(this::onImageBrowseBack, this::onImageBrowseFormward))
 
-        // TODO: May need to [1st view].isFocusableInTouchMode = true // Somewhat required to gain focus on first show up
         controlOverlay.switchScene(ControlCaptureScene::class.java)
     }
 

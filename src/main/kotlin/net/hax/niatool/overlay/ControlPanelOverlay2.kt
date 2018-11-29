@@ -3,9 +3,8 @@ package net.hax.niatool.overlay
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
-import android.view.KeyEvent
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,28 +13,26 @@ import android.widget.FrameLayout
 import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.R
 import net.hax.niatool.onEnd
-import net.hax.niatool.widget.DispatcherLayout
 import java.util.*
 
 class ControlPanelOverlay2(private val context: Context) {
 
-    val uiHandler = Handler(Looper.getMainLooper())
+    private val uiHandler = Handler(Looper.getMainLooper())
     private val animOut = AnimationUtils.loadAnimation(context, R.anim.overlay_ctrl_slide_out)
     private val animIn = AnimationUtils.loadAnimation(context, R.anim.overlay_ctrl_slide_in)
 
     private val mScenes = LinkedList<Scene>()
-    private val inflatedSceneViews = HashMap<Int, View>()
-    val viewport: ViewGroup = FrameLayout(context)
-
+    private val inflatedSceneViews = SparseArray<View>()
     private var currentScene: Scene? = null
-
+    val viewport: ViewGroup = FrameLayout(context)
     var onSceneChangeListener: ((Scene) -> Unit)? = null
 
     fun addScene(scene: Scene) {
         val sceneView = createSceneView(scene.layoutId)
-        bindSceneListeners(scene, sceneView)
+        scene.onCreateView(sceneView, this)
+        //sceneView.isFocusableInTouchMode = true // May be required on 1st scene to gain focus on first show up
 
-        inflatedSceneViews[scene.layoutId] = sceneView
+        inflatedSceneViews.append(scene.layoutId, sceneView)
         mScenes.add(scene)
     }
 
@@ -44,7 +41,7 @@ class ControlPanelOverlay2(private val context: Context) {
         if (currentScene == targetScene) return
 
         uiHandler.post {
-            val targetSceneView = inflatedSceneViews[targetScene.layoutId]!!
+            val targetSceneView = inflatedSceneViews.get(targetScene.layoutId)!!
             displayOnViewport(targetSceneView, ApplicationSettings.animationsEnabled)
 
             currentScene = targetScene
@@ -66,7 +63,6 @@ class ControlPanelOverlay2(private val context: Context) {
         } else {
             showNext()
         }
-
     }
 
     private fun createSceneView(@LayoutRes res: Int): View {
@@ -75,37 +71,8 @@ class ControlPanelOverlay2(private val context: Context) {
         return systemInflater.inflate(res, null)
     }
 
-    private fun bindSceneListeners(scene: Scene, sceneView: View) {
-        for (buttonId in scene.buttonIds) {
-            with(sceneView.findViewById(buttonId)) {
-                setOnClickListener { v -> scene.onButtonClick(v.id, this@ControlPanelOverlay2) }
-                if (scene.supportsLongClick(buttonId))
-                    setOnLongClickListener { v -> scene.onLongButtonClick(v.id, this@ControlPanelOverlay2) }
-            }
-            if (scene.supportsDispatcherKeyEvents()) {
-                (sceneView as DispatcherLayout).onDispatchKeyHandler = { keyEvent ->
-                    scene.onDispatchKeyHandler(keyEvent, this@ControlPanelOverlay2)
-                }
-            }
-        }
-    }
-
     abstract class Scene(@LayoutRes val layoutId: Int) {
-
-        abstract val buttonIds: List<Int>
-
-        open fun supportsLongClick(@IdRes buttonId: Int) = false
-
-        open fun supportsDispatcherKeyEvents() = false
-
-        abstract fun onButtonClick(@IdRes buttonId: Int, controller: ControlPanelOverlay2)
-
-        open fun onLongButtonClick(@IdRes buttonId: Int, controller: ControlPanelOverlay2): Boolean =
-                false /* no-op, did not consume */
-
-        open fun onDispatchKeyHandler(event: KeyEvent?, controller: ControlPanelOverlay2) : Boolean? =
-                false /* no-op, did not consume */
-
+        abstract fun onCreateView(view: View, controller: ControlPanelOverlay2)
     }
 
 }
