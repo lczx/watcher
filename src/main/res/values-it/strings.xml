@@ -29,6 +29,7 @@
     <string name="toast_shot_browse">%1$d su %2$d</string>
     <string name="text_version_note" formatted="true">Versione %s</string>
     <string name="toast_version_check_force">Controllo aggiornamenti…</string>
+    <string name="toast_version_no_update">Nessuna nuova versione disponibile</string>
     <string name="chip_new_version_available">Nuova disponibile!</string>
     <string name="dialog_update_title">Aggiornamento disponibile</string>
     <string name="dialog_update_text" formatted="true">È disponibile un aggiornamento alla versione %s, vuoi scaricarla

@@ -5,21 +5,21 @@ import android.net.ConnectivityManager
 import android.util.Log
 import net.hax.niatool.BuildConfig
 
-class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager, UpdateData) -> Unit)? = null) {
+class UpdateManager(val context: Context, var listener: EventListener? = null) {
 
     companion object {
-        private val TAG = "UpdateManager"
+        private const val TAG = "UpdateManager"
 
-        private val PREF_LAST_UPDATE_CHECK_KEY = "last_update_check_time"
-        private val PREF_LAST_UPDATE_CHECK_DEFAULT = 0L
+        private const val PREF_LAST_UPDATE_CHECK_KEY = "last_update_check_time"
+        private const val PREF_LAST_UPDATE_CHECK_DEFAULT = 0L
 
         private val RELEASE_ENDPOINT_URI = if (BuildConfig.DEBUG)
             "http://prime.lan/latest.json" else "https://api.github.com/repos/lczx/watcher/releases/latest"
 
         // TODO: We may want let the user configure these
         // For now, since this app will primarily be used on the go, it is pointless to check for updates on WiFi
-        private val UPDATE_ONLY_ON_WIFI = false
-        private val UPDATE_CHECK_INTERVAL_MS: Long = 3600000 * 24 * 3 // Check for update every 3 days
+        private const val UPDATE_ONLY_ON_WIFI = false
+        private const val UPDATE_CHECK_INTERVAL_MS: Long = 3600000 * 24 * 3 // Check for update every 3 days
     }
 
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -39,10 +39,10 @@ class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager,
     fun run(force: Boolean = false) {
         if (force || shouldCheckForUpdate()) {
             Log.d(TAG, "Fetching latest release metadata...")
-            UpdaterTask().execute(RELEASE_ENDPOINT_URI)
+            UpdaterTask(this, force).execute(RELEASE_ENDPOINT_URI)
         } else {
             Log.d(TAG, "Better stay offline and check if we remember about an available update...")
-            processCachedUpdate()
+            processCachedUpdate(force)
         }
     }
 
@@ -69,33 +69,44 @@ class UpdateManager(val context: Context, var onUpdateListener: ((UpdateManager,
         return currentVersion == null || updateData.version > currentVersion
     }
 
-    private fun processCachedUpdate() {
+    private fun processCachedUpdate(forced: Boolean) {
         // If we remember about having an update available (and it it actually an update), show it without going on
         // the internet (probably canDownload is false here, but we can be online and got a local error)
-        UpdateData.load(updaterDataStore)?.let {
-            if (isUpdate(it)) {
+        UpdateData.load(updaterDataStore).let {
+            if (it == null || !isUpdate(it)) {
+                listener?.onNoUpdate(this, true, forced)
+            } else {
                 Log.d(TAG, "I remember about finding an update to version ${it.version}!")
-                onUpdateListener?.invoke(this, it)
+                listener?.onUpdateAvailable(this, it, true, forced)
             }
         }
     }
 
-    private inner class UpdaterTask : ReleaseMetaDownloadTask(context) {
+    private class UpdaterTask(val mgr: UpdateManager, val isForced: Boolean) :
+            ReleaseMetaDownloadTask(mgr.context) {
         override fun onPostExecute(result: UpdateData?) {
             if (result == null) {
                 Log.w(TAG, "Got a problem on update check, proceeding as if we are offline and use cached")
-                processCachedUpdate()
+                mgr.processCachedUpdate(isForced)
             } else {
                 // We found a release (update or not), update the last check time...
-                lastUpdateCheckTime = System.currentTimeMillis()
+                mgr.lastUpdateCheckTime = System.currentTimeMillis()
                 // ...then we check if we actually have an update and in that case notify and persist it
-                if (isUpdate(result)) {
+                if (mgr.isUpdate(result)) {
                     Log.i(TAG, "We have an update to ${result.version} available! Hurry up and DL that thing!")
-                    result.persist(updaterDataStore)
-                    onUpdateListener?.invoke(this@UpdateManager, result)
+                    result.persist(mgr.updaterDataStore)
+                    mgr.listener?.onUpdateAvailable(mgr, result, false, isForced)
+                } else {
+                    mgr.listener?.onNoUpdate(mgr, false, isForced)
                 }
             }
         }
+    }
+
+    interface EventListener {
+        fun onUpdateAvailable(updateManager: UpdateManager, updateData: UpdateData, cached: Boolean, forced: Boolean)
+
+        fun onNoUpdate(updateManager: UpdateManager, cached: Boolean, forced: Boolean)
     }
 
 }
