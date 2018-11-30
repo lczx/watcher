@@ -10,8 +10,8 @@ import android.util.Log
 class CaptureRequestActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "CaptureRequestActivity"
-        private val REQUEST_CODE_SCREEN_CAPTURE = 666
+        private const val TAG = "CaptureRequestActivity"
+        private const val REQUEST_CODE_SCREEN_CAPTURE = 666
     }
 
     private lateinit var projectionManager: MediaProjectionManager
