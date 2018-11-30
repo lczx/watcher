@@ -150,12 +150,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun startOverlay() {
         Log.d(TAG, "Starting overlay service")
-        startService(Intent(this, OverlayService::class.java))
+        startService(OverlayServiceUtil.createStartIntent(this, "glyph"))
     }
 
     private fun stopOverlay() {
         Log.d(TAG, "Stopping overlay service")
-        startService(Intent(this, OverlayService::class.java).setAction(OverlayService.ACTION_STOP))
+        startService(OverlayServiceUtil.createStopIntent(this))
     }
 
     private fun onApplicationUpdate(updateManager: UpdateManager, update: UpdateData) {

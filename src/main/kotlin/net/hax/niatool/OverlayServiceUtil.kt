@@ -1,9 +1,17 @@
 package net.hax.niatool
 
+import android.content.Context
 import android.content.Intent
 import android.os.Message
 
 object OverlayServiceUtil {
+
+    fun createStartIntent(context: Context, modeId: String): Intent =
+            Intent(context, OverlayService::class.java).setAction(OverlayService.ACTION_START)
+                    .putExtra(OverlayService.EXTRA_MODE_ID, modeId)
+
+    fun createStopIntent(context: Context): Intent =
+            Intent(context, OverlayService::class.java).setAction(OverlayService.ACTION_STOP)
 
     fun setArmed(armed: Boolean) =
             sendMessageToService(OverlayService.MESSAGE_ARMED_STATE_CHANGED, armed)

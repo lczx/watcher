@@ -61,7 +61,7 @@ abstract class OverlayViewManager(protected val context: Context) {
     private var statusOverlay: StatusPanelOverlay? = null
     protected var controlOverlay: ControlPanelOverlay2? = null
 
-    protected val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT).apply {
+    protected val shotToast = Toast.makeText(context, null, Toast.LENGTH_SHORT)!!.apply {
         setGravity(Gravity.CENTER, 0, calculateControlToastYOffset(context))
     }
 
@@ -82,13 +82,13 @@ abstract class OverlayViewManager(protected val context: Context) {
     }
 
     open fun onProjectionStop() {
-        assert(controlOverlay != null, { "onProjectionStop() should not be called before onProjectionStart()" })
+        assert(controlOverlay != null) { "onProjectionStop() should not be called before onProjectionStart()" }
         windowManager.removeView(controlOverlay!!.viewport)
         controlOverlay = null
     }
 
     fun stopOverlay() {
-        assert(controlOverlay == null, { "stopOverlay() should not be called before onProjectionStop()" })
+        assert(controlOverlay == null) { "stopOverlay() should not be called before onProjectionStop()" }
         windowManager.removeView(statusOverlay!!.viewport)
         statusOverlay = null
     }

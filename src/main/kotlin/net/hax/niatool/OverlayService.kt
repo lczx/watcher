@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.hardware.display.DisplayManager
@@ -19,7 +18,8 @@ import android.os.Message
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import net.hax.niatool.modes.glyph.GlyphOverlayManager
+import net.hax.niatool.modes.ModeRegistry
+import net.hax.niatool.modes.OperationMode
 import net.hax.niatool.overlay.OverlayViewManager
 import net.hax.niatool.task.ScreenCaptureTask
 
@@ -35,12 +35,15 @@ class OverlayService : Service() {
         const val MESSAGE_SET_MEDIA_PROJECTION_INTENT = 1
         const val MESSAGE_CAPTURE_SCREEN = 2
 
+        const val ACTION_START = "start"
         const val ACTION_STOP = "stop"
+        const val EXTRA_MODE_ID = "mode_id"
 
         private var instance: OverlayService? = null
         val handler = MessageHandler()
     }
 
+    private var currentMode: OperationMode? = null
     private var overlayManager: OverlayViewManager? = null
     private var mediaProjectionIntent: Intent? = null
     private var mediaProjection: MediaProjection? = null
@@ -70,14 +73,29 @@ class OverlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent!!.action == ACTION_STOP) {
-            stopSelf()
-            return START_STICKY
-        }
+        when (intent!!.action) {
+            ACTION_START -> run {
+                if (currentMode != null) {
+                    Log.w(TAG, "Attempted to start an already started service")
+                    return@run
+                }
+                val modeId = intent.getStringExtra(EXTRA_MODE_ID)
+                if (modeId == null) {
+                    Log.e(TAG, "Attempted to start with no operation mode")
+                    return@run
+                }
+                val opMode = ModeRegistry.getModeModule(modeId)
+                if (opMode == null) {
+                    Log.e(TAG, "Mode named \"$modeId\" not found, aborting start")
+                    return@run
+                }
 
-        if (overlayManager == null) {
-            overlayManager = GlyphOverlayManager(baseContext)
-            overlayManager?.startOverlay()
+                currentMode = opMode
+                overlayManager = opMode.createOverlayManager(baseContext)
+                overlayManager?.startOverlay()
+            }
+            ACTION_STOP -> stopSelf()
+            else -> Log.w(TAG, "No command provided while starting service")
         }
         return START_STICKY
     }
@@ -87,6 +105,7 @@ class OverlayService : Service() {
         stopMediaProjection()
         overlayManager?.stopOverlay()
         overlayManager = null
+        currentMode = null
 
         super.onDestroy()
     }
@@ -143,10 +162,8 @@ class OverlayService : Service() {
 
         // Start an async task to capture the screen, we pass in a postProcess lambda to crop the image and keep
         // only the center square of the screen, as a callback (on UI thread) we pass overlayManager.onImageAvailable()
-        ScreenCaptureTask({ image, capture ->
-            // TODO: NOT ORIENTATION SAFE
-            Bitmap.createBitmap(capture, 0, (image.height - image.width) / 2, image.width, image.width)
-        }, overlayManager!!::onImageAvailable).execute(imageReader!!)
+        ScreenCaptureTask(currentMode!!::processCaptureBackground, overlayManager!!::onImageAvailable)
+                .execute(imageReader!!)
     }
 
     class MessageHandler : Handler() {
