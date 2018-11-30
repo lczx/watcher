@@ -31,8 +31,8 @@ import net.hax.niatool.updater.UpdateManager
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "MainActivity"
-        private val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
+        private const val TAG = "MainActivity"
+        private const val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
     }
 
     private val floatingSettingsWindowDelegate = lazy { FloatingSettingsWindow(this) }
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun stopOverlay() {
         Log.d(TAG, "Stopping overlay service")
-        stopService(Intent(this, OverlayService::class.java))
+        startService(Intent(this, OverlayService::class.java).setAction(OverlayService.ACTION_STOP))
     }
 
     private fun onApplicationUpdate(updateManager: UpdateManager, update: UpdateData) {
@@ -166,9 +166,9 @@ class MainActivity : AppCompatActivity() {
             if (updateManager.canDownload) {
                 alert.setMessage(getString(R.string.dialog_update_text, update.version.pretty))
                         .setNegativeButton(R.string.dialog_update_button_no, null)
-                        .setPositiveButton(R.string.dialog_update_button_yes, { _, _ ->
+                        .setPositiveButton(R.string.dialog_update_button_yes) { _, _ ->
                             UpdateInstaller(this).downloadAndInstall(update)
-                        })
+                        }
             } else {
                 alert.setMessage(getString(R.string.dialog_update_text_offline, update.version.pretty))
                         .setPositiveButton(android.R.string.ok, null)

@@ -29,37 +29,16 @@ import net.hax.niatool.task.ScreenCaptureTask
 class OverlayService : Service() {
 
     companion object {
+        private const val TAG = "OverlayService"
+
         const val MESSAGE_ARMED_STATE_CHANGED = 0
         const val MESSAGE_SET_MEDIA_PROJECTION_INTENT = 1
         const val MESSAGE_CAPTURE_SCREEN = 2
 
-        val handler = ServiceHandler()
+        const val ACTION_STOP = "stop"
 
-        private val TAG = "OverlayService"
         private var instance: OverlayService? = null
-
-        class ServiceHandler : Handler() {
-            override fun handleMessage(msg: Message?) {
-                if (instance == null) {
-                    Log.w(TAG, "Message $msg with code ${msg?.what} was dropped because" +
-                            " ${OverlayService::class.java.simpleName} is not running")
-                    return
-                }
-                when (msg?.what) {
-                    MESSAGE_ARMED_STATE_CHANGED ->
-                        if (msg.obj as Boolean)
-                            instance!!.initializeMediaProjection()
-                        else
-                            instance!!.stopMediaProjection()
-                    MESSAGE_SET_MEDIA_PROJECTION_INTENT -> {
-                        instance!!.mediaProjectionIntent = msg.obj as Intent?
-                        instance!!.initializeMediaProjection()
-                    }
-                    MESSAGE_CAPTURE_SCREEN ->
-                        instance!!.takeShot()
-                }
-            }
-        }
+        val handler = MessageHandler()
     }
 
     private var overlayManager: OverlayViewManager? = null
@@ -82,12 +61,25 @@ class OverlayService : Service() {
                 .setSmallIcon(R.drawable.launch_screen_logo)
                 .setContentIntent(PendingIntent.getActivity(baseContext, 0,
                         Intent(baseContext, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0))
+                .addAction(0, resources.getString(R.string.notification_action_stop), PendingIntent.getService(
+                        baseContext, 0, Intent(baseContext, this::class.java).setAction(ACTION_STOP), 0))
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .build())
 
         instance = this
-        overlayManager = GlyphOverlayManager(baseContext)
-        overlayManager?.startOverlay()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent!!.action == ACTION_STOP) {
+            stopSelf()
+            return START_STICKY
+        }
+
+        if (overlayManager == null) {
+            overlayManager = GlyphOverlayManager(baseContext)
+            overlayManager?.startOverlay()
+        }
+        return START_STICKY
     }
 
     override fun onDestroy() {
@@ -146,8 +138,8 @@ class OverlayService : Service() {
     }
 
     private fun takeShot() {
-        assert(mediaProjection != null,
-                { "Capture button should not be available unless armed/MediaProjection available" })
+        assert(mediaProjection != null) {
+            "Capture button should not be available unless armed/MediaProjection available" }
 
         // Start an async task to capture the screen, we pass in a postProcess lambda to crop the image and keep
         // only the center square of the screen, as a callback (on UI thread) we pass overlayManager.onImageAvailable()
@@ -155,6 +147,29 @@ class OverlayService : Service() {
             // TODO: NOT ORIENTATION SAFE
             Bitmap.createBitmap(capture, 0, (image.height - image.width) / 2, image.width, image.width)
         }, overlayManager!!::onImageAvailable).execute(imageReader!!)
+    }
+
+    class MessageHandler : Handler() {
+        override fun handleMessage(msg: Message?) {
+            if (instance == null) {
+                Log.w(TAG, "Message $msg with code ${msg?.what} was dropped because" +
+                        " ${OverlayService::class.java.simpleName} is not running")
+                return
+            }
+            when (msg?.what) {
+                MESSAGE_ARMED_STATE_CHANGED ->
+                    if (msg.obj as Boolean)
+                        instance!!.initializeMediaProjection()
+                    else
+                        instance!!.stopMediaProjection()
+                MESSAGE_SET_MEDIA_PROJECTION_INTENT -> {
+                    instance!!.mediaProjectionIntent = msg.obj as Intent?
+                    instance!!.initializeMediaProjection()
+                }
+                MESSAGE_CAPTURE_SCREEN ->
+                    instance!!.takeShot()
+            }
+        }
     }
 
 }

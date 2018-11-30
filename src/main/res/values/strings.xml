@@ -17,6 +17,7 @@
     </string>
 
     <string name="notification_title">Watcher overlay is running</string>
+    <string name="notification_action_stop">Shutdown</string>
     <string-array name="notification_text_random">
         <item>\"Pigeons like to eat glass because it makes their think they are stronger\"</item>
         <item>\"You filthy cheater…\"</item>

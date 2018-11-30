@@ -14,6 +14,7 @@
     </string>
 
     <string name="notification_title">Overlay Watcher in esecuzione</string>
+    <string name="notification_action_stop">Termina</string>
     <string-array name="notification_text_random">
         <item>\"Ai piccioni piace mangiare vetro perché pensano che li renda più forti\"</item>
         <item>\"Tu sporco imbroglione…\"</item>
