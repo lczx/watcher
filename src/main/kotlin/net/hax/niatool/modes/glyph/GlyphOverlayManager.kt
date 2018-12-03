@@ -16,7 +16,7 @@ import net.hax.niatool.overlay.ControlPanelOverlay2
 class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
 
     companion object {
-        private val TAG = "GlyphOverlayManager"
+        private const val TAG = "GlyphOverlayManager"
 
         private val LAYOUT_PARAMS_IMAGE_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.MATCH_PARENT
@@ -43,8 +43,8 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         imageOverlay = null
     }
 
-    override fun onImageAvailable(bitmap: Bitmap) {
-        imageOverlay!!.addImage(bitmap)
+    override fun onDataAvailable(data: Any?) {
+        imageOverlay!!.addImage(data as Bitmap)
         shotToast.setText(context.getString(R.string.toast_shot_taken, imageOverlay!!.imageCount))
         shotToast.show()
     }
@@ -53,7 +53,7 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         controlOverlay.onSceneChangeListener = this::onControlSceneChanged
 
         controlOverlay.addScene(ControlCaptureScene { OverlayServiceUtil.captureScreen() })
-        controlOverlay.addScene(ControlBrowseScene(this::onImageBrowseBack, this::onImageBrowseFormward))
+        controlOverlay.addScene(ControlBrowseScene(this::onImageBrowseBack, this::onImageBrowseForward))
 
         controlOverlay.switchScene(ControlCaptureScene::class.java)
     }
@@ -75,7 +75,7 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         imageOverlay?.previousImage()
     }
 
-    private fun onImageBrowseFormward() {
+    private fun onImageBrowseForward() {
         if (imageOverlay?.viewport?.visibility != View.VISIBLE)
             Log.w(TAG, "Flow warning: should not be possible to browse if control & image overlays are hidden")
         imageOverlay?.nextImage()

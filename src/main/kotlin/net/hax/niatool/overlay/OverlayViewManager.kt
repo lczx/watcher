@@ -93,7 +93,7 @@ abstract class OverlayViewManager(protected val context: Context) {
         statusOverlay = null
     }
 
-    abstract fun onImageAvailable(bitmap: Bitmap)
+    abstract fun onDataAvailable(data: Any?)
 
     abstract fun configureControlOverlay(controlOverlay: ControlPanelOverlay2)
 

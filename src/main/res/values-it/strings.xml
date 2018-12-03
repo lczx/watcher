@@ -47,4 +47,10 @@
         che non funzioni come dovrebbe o che faccia cose strane al tuo dispositivo, <i>sei stato/a avvertito/a</i>!
     </string>
 
+    <string name="mode_glyph_name">Glyph Hacking</string>
+    <string name="mode_glyph_description">Acquisisce un insieme di screenshot dell\'area centrale dello schermo,
+        tenendo premuto il pulsante di cattura passa in modalità navigazione dove le immagini catturate sono
+        visualizzate in rilievo sulla stessa area dello schermo e possono essere sfogliate con i pulsanti
+        volume.</string>
+
 </resources>

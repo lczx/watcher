@@ -50,4 +50,9 @@
         misbehave and do weird things to your device, <i>you have been warned</i>!
     </string>
 
+    <string name="mode_glyph_name">Glyph Hacking</string>
+    <string name="mode_glyph_description">Collects a list of screenshots of the central area of the screen,
+        long-pressing the capture button switches to browse mode where the captures are translucently overlaid on the
+        same area and can be browsed back and forth with the volume keys.</string>
+
 </resources>

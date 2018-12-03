@@ -8,10 +8,10 @@ import android.os.AsyncTask
 // TODO JavaDoc that postProcess is executed on the working thread and should not save copied of the passed
 // TODO   in image because it will be recycled
 
-class ScreenCaptureTask(private val postProcess: ((Image, Bitmap) -> Bitmap)? = null,
-                        private val callback: (Bitmap) -> Unit) : AsyncTask<ImageReader, Void, Bitmap>() {
+class ScreenCaptureTask(private val postProcess: ((Image, Bitmap) -> Any?)? = null,
+                        private val callback: (Any?) -> Unit) : AsyncTask<ImageReader, Void, Any?>() {
 
-    override fun doInBackground(vararg params: ImageReader?): Bitmap {
+    override fun doInBackground(vararg params: ImageReader?): Any? {
         val image = params[0]!!.acquireLatestImage()
         // TODO verify that is safe to use image.width and height instead of windowManager.defaultDisplay.getSize
         // TODO NOT CHECKED FOR ORIENTATION SAFETY
@@ -30,6 +30,6 @@ class ScreenCaptureTask(private val postProcess: ((Image, Bitmap) -> Bitmap)? = 
         return result
     }
 
-    override fun onPostExecute(result: Bitmap?) = callback(result!!)
+    override fun onPostExecute(result: Any?) = callback(result!!)
 
 }

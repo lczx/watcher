@@ -12,4 +12,6 @@ object ModeRegistry {
         return modes[id]
     }
 
+    data class Info(val name: String, val description: String)
+
 }
