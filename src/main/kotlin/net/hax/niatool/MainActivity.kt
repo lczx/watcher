@@ -31,13 +31,14 @@ import net.hax.niatool.updater.UpdateManager
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "MainActivity"
-        private val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
+        private const val TAG = "MainActivity"
+        private const val REQUEST_CODE_PERM_SYSTEM_ALERT = 1337
     }
 
     private val floatingSettingsWindowDelegate = lazy { FloatingSettingsWindow(this) }
     private val floatingSettingsWindow by floatingSettingsWindowDelegate
     private lateinit var mServiceToggleSwitch: SwitchCompat
+    private var pendingUpdateToast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +66,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Version note & long-click force update
-        val updateManger = UpdateManager(this, this::onApplicationUpdate)
+        val updateManger = UpdateManager(this, UpdateListener())
         with(findViewById(R.id.version_note) as TextView) {
             val currentVersion = packageManager.getPackageInfo(packageName, 0).versionName
             text = getString(R.string.text_version_note, currentVersion)
             setOnLongClickListener {
-                Toast.makeText(this@MainActivity, R.string.toast_version_check_force, Toast.LENGTH_SHORT).show()
+                pendingUpdateToast = Toast.makeText(this@MainActivity, R.string.toast_version_check_force, Toast.LENGTH_SHORT)
+                pendingUpdateToast!!.show()
                 updateManger.run(force = true)
                 true
             }
@@ -150,31 +152,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun startOverlay() {
         Log.d(TAG, "Starting overlay service")
-        startService(Intent(this, OverlayService::class.java))
+        startService(OverlayServiceUtil.createStartIntent(this, "glyph"))
     }
 
     private fun stopOverlay() {
         Log.d(TAG, "Stopping overlay service")
-        stopService(Intent(this, OverlayService::class.java))
-    }
-
-    private fun onApplicationUpdate(updateManager: UpdateManager, update: UpdateData) {
-        val newVersionChip = findViewById(R.id.version_new)
-        newVersionChip.visibility = View.VISIBLE
-        newVersionChip.setOnClickListener {
-            val alert = AlertDialog.Builder(this).setTitle(R.string.dialog_update_title)
-            if (updateManager.canDownload) {
-                alert.setMessage(getString(R.string.dialog_update_text, update.version.pretty))
-                        .setNegativeButton(R.string.dialog_update_button_no, null)
-                        .setPositiveButton(R.string.dialog_update_button_yes, { _, _ ->
-                            UpdateInstaller(this).downloadAndInstall(update)
-                        })
-            } else {
-                alert.setMessage(getString(R.string.dialog_update_text_offline, update.version.pretty))
-                        .setPositiveButton(android.R.string.ok, null)
-            }
-            alert.show()
-        }
+        startService(OverlayServiceUtil.createStopIntent(this))
     }
 
     private fun calculateSwitchTipLocation(v: View): Point {
@@ -191,6 +174,34 @@ class MainActivity : AppCompatActivity() {
             referenceX = v.resources.displayMetrics.widthPixels - referenceX // mirror
 
         return Point(referenceX, toolbarPos[1] + (v.parent as View).height - displayFrame.top)
+    }
+
+    inner class UpdateListener : UpdateManager.EventListener {
+        override fun onUpdateAvailable(updateManager: UpdateManager, updateData: UpdateData, cached: Boolean, forced: Boolean) {
+            val newVersionChip = findViewById(R.id.version_new)
+            newVersionChip.visibility = View.VISIBLE
+            newVersionChip.setOnClickListener {
+                val alert = AlertDialog.Builder(this@MainActivity).setTitle(R.string.dialog_update_title)
+                if (updateManager.canDownload) {
+                    alert.setMessage(getString(R.string.dialog_update_text, updateData.version.pretty))
+                            .setNegativeButton(R.string.dialog_update_button_no, null)
+                            .setPositiveButton(R.string.dialog_update_button_yes) { _, _ ->
+                                UpdateInstaller(this@MainActivity).downloadAndInstall(updateData)
+                            }
+                } else {
+                    alert.setMessage(getString(R.string.dialog_update_text_offline, updateData.version.pretty))
+                            .setPositiveButton(android.R.string.ok, null)
+                }
+                alert.show()
+            }
+        }
+
+        override fun onNoUpdate(updateManager: UpdateManager, cached: Boolean, forced: Boolean) {
+            if (forced) {
+                pendingUpdateToast?.cancel()
+                Toast.makeText(this@MainActivity, R.string.toast_version_no_update, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 }

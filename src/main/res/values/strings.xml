@@ -17,6 +17,7 @@
     </string>
 
     <string name="notification_title">Watcher overlay is running</string>
+    <string name="notification_action_stop">Shutdown</string>
     <string-array name="notification_text_random">
         <item>\"Pigeons like to eat glass because it makes their think they are stronger\"</item>
         <item>\"You filthy cheater…\"</item>
@@ -31,6 +32,7 @@
     <string name="toast_shot_browse">%1$d of %2$d</string>
     <string name="text_version_note" formatted="true">Version %s</string>
     <string name="toast_version_check_force">Checking for updates…</string>
+    <string name="toast_version_no_update">No new version available</string>
     <string name="chip_new_version_available">New available!</string>
     <string name="dialog_update_title">Update available</string>
     <string name="dialog_update_text" formatted="true">An update to version %s is available, do you want to download it
@@ -47,5 +49,10 @@
     <string name="alert_prerelease_text">This is a <b>pre-release version of Watcher</b> and thus is very likely to
         misbehave and do weird things to your device, <i>you have been warned</i>!
     </string>
+
+    <string name="mode_glyph_name">Glyph Hacking</string>
+    <string name="mode_glyph_description">Collects a list of screenshots of the central area of the screen,
+        long-pressing the capture button switches to browse mode where the captures are translucently overlaid on the
+        same area and can be browsed back and forth with the volume keys.</string>
 
 </resources>

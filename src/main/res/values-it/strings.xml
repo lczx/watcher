@@ -14,6 +14,7 @@
     </string>
 
     <string name="notification_title">Overlay Watcher in esecuzione</string>
+    <string name="notification_action_stop">Termina</string>
     <string-array name="notification_text_random">
         <item>\"Ai piccioni piace mangiare vetro perché pensano che li renda più forti\"</item>
         <item>\"Tu sporco imbroglione…\"</item>
@@ -28,6 +29,7 @@
     <string name="toast_shot_browse">%1$d su %2$d</string>
     <string name="text_version_note" formatted="true">Versione %s</string>
     <string name="toast_version_check_force">Controllo aggiornamenti…</string>
+    <string name="toast_version_no_update">Nessuna nuova versione disponibile</string>
     <string name="chip_new_version_available">Nuova disponibile!</string>
     <string name="dialog_update_title">Aggiornamento disponibile</string>
     <string name="dialog_update_text" formatted="true">È disponibile un aggiornamento alla versione %s, vuoi scaricarla
@@ -44,5 +46,11 @@
     <string name="alert_prerelease_text">Questa è una <b>versione pre-release di Watcher</b> e quindi è molto probabile
         che non funzioni come dovrebbe o che faccia cose strane al tuo dispositivo, <i>sei stato/a avvertito/a</i>!
     </string>
+
+    <string name="mode_glyph_name">Glyph Hacking</string>
+    <string name="mode_glyph_description">Acquisisce un insieme di screenshot dell\'area centrale dello schermo,
+        tenendo premuto il pulsante di cattura passa in modalità navigazione dove le immagini catturate sono
+        visualizzate in rilievo sulla stessa area dello schermo e possono essere sfogliate con i pulsanti
+        volume.</string>
 
 </resources>
