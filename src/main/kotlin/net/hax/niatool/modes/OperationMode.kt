@@ -2,12 +2,16 @@ package net.hax.niatool.modes
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.media.Image
 import net.hax.niatool.overlay.OverlayViewManager
+import net.hax.niatool.task.ScreenCaptureTask
 
 /**
  * An operation mode for Watcher
+ *
+ * Classes implementing this interface can be considered as "factories" of components required for the regular workings
+ * of a Watcher _mode of operation_.
+ *
+ * *A class implementing this must be registered in [ModeRegistry] so that it can be selected by the user in the UI.*
  */
 interface OperationMode {
 
@@ -27,14 +31,14 @@ interface OperationMode {
     fun createOverlayManager(context: Context): OverlayViewManager
 
     /**
-     * Called when a capture is made to process the screenshot
+     * Builds a new implementation of [ScreenCaptureTask] to process captured images
      *
-     * This method is invoked from a worker thread, UI should not be updated directly from this thread.
+     * The returned [ScreenCaptureTask] allows the mode logic to process a new screenshot in background, update the UI
+     * while processing and when the task itself is finished; in the same manner as Android's async tasks.
      *
-     * @param image The raw captured image, use only to get capture information
-     * @param capture The built capture bitmap to process
-     * @return Any data to be passed to [OverlayViewManager.onDataAvailable] on the UI thread
+     * @param overlayManager The current [OverlayViewManager] as it is returned by [OperationMode.createOverlayManager],
+     *                       for ease of access
      */
-    fun processCaptureBackground(image: Image, capture: Bitmap): Any?
+    fun makeCaptureProcessTask(overlayManager: OverlayViewManager): ScreenCaptureTask<*, *>
 
 }

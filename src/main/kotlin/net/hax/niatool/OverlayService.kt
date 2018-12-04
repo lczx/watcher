@@ -162,8 +162,7 @@ class OverlayService : Service() {
 
         // Start an async task to capture the screen, we pass in a postProcess lambda to crop the image and keep
         // only the center square of the screen, as a callback (on UI thread) we pass overlayManager.onImageAvailable()
-        ScreenCaptureTask(currentMode!!::processCaptureBackground, overlayManager!!::onDataAvailable)
-                .execute(imageReader!!)
+        currentMode!!.makeCaptureProcessTask(overlayManager!!).execute(imageReader!!)
     }
 
     class MessageHandler : Handler() {

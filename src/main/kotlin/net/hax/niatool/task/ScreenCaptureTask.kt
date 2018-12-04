@@ -5,13 +5,9 @@ import android.media.Image
 import android.media.ImageReader
 import android.os.AsyncTask
 
-// TODO JavaDoc that postProcess is executed on the working thread and should not save copied of the passed
-// TODO   in image because it will be recycled
+abstract class ScreenCaptureTask<P, R> : AsyncTask<ImageReader, P, R>() {
 
-class ScreenCaptureTask(private val postProcess: ((Image, Bitmap) -> Any?)? = null,
-                        private val callback: (Any?) -> Unit) : AsyncTask<ImageReader, Void, Any?>() {
-
-    override fun doInBackground(vararg params: ImageReader?): Any? {
+    override fun doInBackground(vararg params: ImageReader?): R {
         val image = params[0]!!.acquireLatestImage()
         // TODO verify that is safe to use image.width and height instead of windowManager.defaultDisplay.getSize
         // TODO NOT CHECKED FOR ORIENTATION SAFETY
@@ -24,12 +20,24 @@ class ScreenCaptureTask(private val postProcess: ((Image, Bitmap) -> Any?)? = nu
                 image.width + rowPadding / plane.pixelStride, image.height, Bitmap.Config.ARGB_8888)
         capture.copyPixelsFromBuffer(plane.buffer)
 
-        val result = postProcess?.invoke(image, capture) ?: capture
+        val result = processCaptureBackground(image, capture) ?: capture
         if (result != capture) capture.recycle()
         image.close()
-        return result
+
+        @Suppress("UNCHECKED_CAST") // It is a problem of the mode provider if this cast fails
+        return result as R
     }
 
-    override fun onPostExecute(result: Any?) = callback(result!!)
+    /**
+     * Callwd when a capture bitmap is ready for further processing
+     *
+     * This method is invoked from a worker thread, UI should not be updated directly from this thread.
+     * Furthermore, the passed in `image` must not be stored as it is recycled just after this method is called.
+     *
+     * @param image The raw captured image, use only to get capture information
+     * @param capture Thr built capture bitmap to process
+     * @return The result of the computation
+     */
+    abstract fun processCaptureBackground(image: Image, capture: Bitmap): R
 
 }

@@ -30,6 +30,12 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
 
     private var imageOverlay: ImageOverlay? = null
 
+    fun addImage(image: Bitmap) {
+        imageOverlay!!.addImage(image)
+        shotToast.setText(context.getString(R.string.toast_shot_taken, imageOverlay!!.imageCount))
+        shotToast.show()
+    }
+
     override fun onProjectionStart() {
         super.onProjectionStart()
         imageOverlay = ImageOverlay(context)
@@ -41,12 +47,6 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         imageOverlay!!.recycleAll()
         windowManager.removeView(imageOverlay!!.viewport)
         imageOverlay = null
-    }
-
-    override fun onDataAvailable(data: Any?) {
-        imageOverlay!!.addImage(data as Bitmap)
-        shotToast.setText(context.getString(R.string.toast_shot_taken, imageOverlay!!.imageCount))
-        shotToast.show()
     }
 
     override fun configureControlOverlay(controlOverlay: ControlPanelOverlay2) {

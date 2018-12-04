@@ -93,8 +93,6 @@ abstract class OverlayViewManager(protected val context: Context) {
         statusOverlay = null
     }
 
-    abstract fun onDataAvailable(data: Any?)
-
     abstract fun configureControlOverlay(controlOverlay: ControlPanelOverlay2)
 
     class ArmedStatusListener : StatusPanelOverlay.OnArmedStatusListener {
