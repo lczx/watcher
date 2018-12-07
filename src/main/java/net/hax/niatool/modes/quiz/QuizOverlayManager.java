@@ -2,6 +2,7 @@ package net.hax.niatool.modes.quiz;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.AsyncTask;
 import android.support.v4.view.GravityCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -10,11 +11,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 import net.hax.niatool.OverlayServiceUtil;
 import net.hax.niatool.R;
+import net.hax.niatool.modes.quiz.detector.FeatureDetector;
 import net.hax.niatool.overlay.ControlPanelOverlay2;
 import net.hax.niatool.overlay.OverlayViewManager;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class QuizOverlayManager extends OverlayViewManager {
 
@@ -24,9 +24,16 @@ public class QuizOverlayManager extends OverlayViewManager {
     private final ProgressOverlay progressOverlay;
     private ResultDisplayOverlay[] resultOverlays = new ResultDisplayOverlay[3];
 
+    private OcrInitializer ocrInitializer;
+    private FeatureDetector featureDetector;
+
     public QuizOverlayManager(@NotNull Context context) {
         super(context);
         progressOverlay = new ProgressOverlay(context);
+    }
+
+    public FeatureDetector getFeatureDetector() {
+        return featureDetector;
     }
 
     @Override
@@ -37,8 +44,8 @@ public class QuizOverlayManager extends OverlayViewManager {
 
     void onTaskStart() {
         clearResults();
-        getWindowManager().addView(progressOverlay.getViewport(), makeProgressLayoutParams());
         progressOverlay.setProgress(0, null);
+        progressOverlay.getViewport().setVisibility(View.VISIBLE);
     }
 
     void onProgressUpdate(int percentage, String description) {
@@ -46,8 +53,7 @@ public class QuizOverlayManager extends OverlayViewManager {
     }
 
     void onResult(int[] values, int[] yCoords) {
-        System.out.println(Arrays.toString(yCoords));
-        getWindowManager().removeView(progressOverlay.getViewport());
+        progressOverlay.getViewport().setVisibility(View.INVISIBLE);
 
         if (values == null) {
             Toast.makeText(getContext(), "No results have been found!", Toast.LENGTH_LONG).show();
@@ -68,9 +74,21 @@ public class QuizOverlayManager extends OverlayViewManager {
     }
 
     @Override
+    public void onProjectionStart() {
+        super.onProjectionStart();
+        getWindowManager().addView(progressOverlay.getViewport(), makeProgressLayoutParams());
+        progressOverlay.getViewport().setVisibility(View.INVISIBLE);
+        ocrInitializer = (OcrInitializer) new OcrInitializer(this).execute();
+    }
+
+    @Override
     public void onProjectionStop() {
         getWindowManager().removeView(progressOverlay.getViewport());
         clearResults();
+        if (ocrInitializer.getStatus() != AsyncTask.Status.FINISHED)
+            ocrInitializer.cancel(true);
+        else
+            ocrInitializer.onCancelled();
 
         super.onProjectionStop();
     }
@@ -115,15 +133,49 @@ public class QuizOverlayManager extends OverlayViewManager {
         return p;
     }
 
-    private static class CaptureScene extends ControlPanelOverlay2.Scene {
+    private class CaptureScene extends ControlPanelOverlay2.Scene {
         public CaptureScene() {
             super(R.layout.overlay_ctrl_capture);
         }
 
         @Override
         public void onCreateView(@NotNull View view, @NotNull ControlPanelOverlay2 controller) {
-            view.findViewById(R.id.button_capture)
-                    .setOnClickListener(v -> OverlayServiceUtil.INSTANCE.captureScreen());
+            view.findViewById(R.id.button_capture).setOnClickListener(v -> {
+                if (ocrInitializer.getStatus() != AsyncTask.Status.FINISHED) {
+                    Toast.makeText(getContext(), "OCR Engine still not ready", Toast.LENGTH_SHORT).show();
+                } else if (progressOverlay.getViewport().getVisibility() == View.VISIBLE) {
+                    Toast.makeText(getContext(), "Previous capture is still processing!", Toast.LENGTH_SHORT).show();
+                } else {
+                    OverlayServiceUtil.INSTANCE.captureScreen();
+                }
+            });
+        }
+    }
+
+    private static class OcrInitializer extends AsyncTask<Void, Void, Void> {
+        private final QuizOverlayManager overlayManager;
+
+        private OcrInitializer(QuizOverlayManager overlayManager) {
+            this.overlayManager = overlayManager;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            overlayManager.featureDetector = new FeatureDetector(overlayManager.getContext());
+            return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (overlayManager.featureDetector != null) {
+                overlayManager.featureDetector.freeResources();
+                overlayManager.featureDetector = null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Toast.makeText(overlayManager.getContext(), "OCR Engine ready", Toast.LENGTH_SHORT).show();
         }
     }
 

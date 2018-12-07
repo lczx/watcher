@@ -26,10 +26,9 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
     @Override
     public ResultData processCaptureBackground(@NotNull Image image, @NotNull Bitmap capture) {
         publishProgress(new ProgressInfo(0, "Initializing"));
-        FeatureDetector detector = new FeatureDetector(overlayManager.getContext());
+        FeatureDetector detector = overlayManager.getFeatureDetector();
         detector.setStatusListener(this);
         FeatureDetector.Result ocrResult = detector.processImage(capture);
-        detector.freeResources();
 
         if (ocrResult == null) {
             LOG.warn("Character recognition failed, shot was probably taken on the wrong screen");
