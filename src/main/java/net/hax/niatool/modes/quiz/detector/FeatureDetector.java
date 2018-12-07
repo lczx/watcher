@@ -12,8 +12,9 @@ import java.util.Arrays;
 
 public class FeatureDetector {
 
-    private static final String TESSERACT_CACHE_FOLDER = "/tesseract/";
-    private static final String TESSERACT_DATA_EXT = ".traineddata";
+    private static final String TESSERACT_CACHE_FOLDER = "tesseract";
+    private static final String TESSERACT_TRAINED_DATA_DIR = "tessdata";
+    private static final String TESSERACT_TRAINED_DATA_EXT = ".traineddata";
 
     private static final int WHITE_THRESHOLD = 240;
     private static final int HEADER_HEIGHT_DP = 145;
@@ -117,13 +118,14 @@ public class FeatureDetector {
     }
 
     private void initializeEngine(Context context, String language, @RawRes int langResData) {
-        String tCacheDir = context.getExternalCacheDir() + TESSERACT_CACHE_FOLDER;
-        File tDataFile = new File(tCacheDir, language + TESSERACT_DATA_EXT);
+        File tCacheDir = new File(context.getCacheDir(), TESSERACT_CACHE_FOLDER);
+        File tTrainedDataDir = new File(tCacheDir, TESSERACT_TRAINED_DATA_DIR);
+        File tDataFile = new File(tTrainedDataDir, language + TESSERACT_TRAINED_DATA_EXT);
         if (!tDataFile.isFile()) {
-            new File(tCacheDir).mkdirs();
+            tTrainedDataDir.mkdirs();
             dumpStreamToFile(context.getResources().openRawResource(langResData), tDataFile);
         }
-        tesseract.init(tCacheDir, language);
+        tesseract.init(tCacheDir.getAbsolutePath(), language);
     }
 
     private String getOCRResult(Bitmap image) {
@@ -160,11 +162,15 @@ public class FeatureDetector {
         }
 
         public String getQuestion() {
-            return this.question;
+            return question;
         }
 
         public String[] getAnswers() {
-            return this.answers;
+            return answers;
+        }
+
+        public int[] getAnswerYCoordinates() {
+            return ansPosY;
         }
 
         @Override
