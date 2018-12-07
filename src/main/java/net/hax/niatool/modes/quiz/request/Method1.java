@@ -34,11 +34,14 @@ public class Method1 extends MethodToFindAMatch {
     private int[] countWordsInGoogleRequest(String question, String answers[]) {
         int occorrenze[] = {0, 0, 0};
         try {
+            if (statusListener != null) statusListener.onSearchUpdate(Step.FETCH_DOCUMENT);
+
             Map<String, String> parameters = new HashMap<>();
             parameters.put("q", question);
             parameters.put("num", Integer.toString(numResults));
-
             Document doc = Jsoup.connect(makeUrl(parameters)).get();
+
+            if (statusListener != null) statusListener.onSearchUpdate(Step.PROCESS_DOCUMENT);
             Elements risultati = doc.getElementsByClass("g");
 
             UselessWordRemover screma = new UselessWordRemover();

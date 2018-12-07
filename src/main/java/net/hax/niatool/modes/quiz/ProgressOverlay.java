@@ -26,7 +26,7 @@ class ProgressOverlay {
     }
 
     public void setProgress(int amount, String description) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (amount != 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             progressBar.setProgress(amount, true);
         } else {
             progressBar.setProgress(amount);

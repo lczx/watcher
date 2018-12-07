@@ -13,7 +13,14 @@ public abstract class MethodToFindAMatch {
     private static final Logger LOG = LoggerFactory.getLogger(MethodToFindAMatch.class);
     private static final String GOOGLE_SEARCH_URL = "http://www.google.com/search?";
 
+    protected StatusListener statusListener;
+
+    public void setStatusListener(StatusListener statusListener) {
+        this.statusListener = statusListener;
+    }
+
     /**
+     *
      * @return Torna la percentuale di probabilità (max=100) della correttezza delle risposta nello stesso ordine delle risposte date
      */
     public int[] find(String question, String[] answers) throws AnswerNotFoundException {
@@ -69,6 +76,15 @@ public abstract class MethodToFindAMatch {
         }
 
         return occorrenze;
+    }
+
+    public interface StatusListener {
+        void onSearchUpdate(Step step);
+    }
+
+    public enum Step {
+        FETCH_DOCUMENT,
+        PROCESS_DOCUMENT
     }
 
 }

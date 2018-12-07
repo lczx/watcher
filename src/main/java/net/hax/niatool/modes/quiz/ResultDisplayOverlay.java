@@ -27,8 +27,4 @@ public class ResultDisplayOverlay {
         textView.setText(text);
     }
 
-    public int getViewHeight() {
-        return (int) textView.getTextSize();
-    }
-
 }

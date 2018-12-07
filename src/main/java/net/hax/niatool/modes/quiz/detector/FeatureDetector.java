@@ -22,6 +22,7 @@ public class FeatureDetector {
     private static final int BORDER_ANSWER_DP = 70;
 
     private final TessBaseAPI tesseract;
+    private StatusListener statusListener;
 
     public FeatureDetector(Context context) {
         //https://solidgeargroup.com/ocr-on-android
@@ -29,7 +30,13 @@ public class FeatureDetector {
         initializeEngine(context, "ita", R.raw.tessdata_ita);
     }
 
+    public void setStatusListener(StatusListener statusListener) {
+        this.statusListener = statusListener;
+    }
+
     public Result processImage(Bitmap bitmap) {
+        if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.MEASURING_COMPONENTS);
+
         int borderQ = (int) (BORDER_QUESTION_DP * bitmap.getDensity() / 160f);
         int width = bitmap.getWidth() - borderQ;
         int height = bitmap.getHeight();
@@ -62,6 +69,8 @@ public class FeatureDetector {
         }
 
         if (correct) {
+            if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.CROPPING_BITMAPS);
+
             int headerHeight = (int) (HEADER_HEIGHT_DP * bitmap.getDensity() / 160f);
 
             int paddedAnswerBox = infraAnswerBox + answerBox;
@@ -92,10 +101,17 @@ public class FeatureDetector {
             saveBitmap(bmpQ, "q");
             */
 
+            if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_QUESTION);
+            String question = getOCRResult(bmpQuestion);
+            if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_ANS1);
+            String answer1 = getOCRResult(bmpAnswer1);
+            if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_ANS2);
+            String answer2 = getOCRResult(bmpAnswer2);
+            if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_ANS3);
+            String answer3 = getOCRResult(bmpAnswer3);
+
             int ansBoxHalf = answerBox / 2;
-            return new Result(
-                    getOCRResult(bmpQuestion),
-                    new String[]{getOCRResult(bmpAnswer1), getOCRResult(bmpAnswer2), getOCRResult(bmpAnswer3)},
+            return new Result(question, new String[]{answer1, answer2, answer3},
                     new int[]{ans1Y + ansBoxHalf, ans2Y + ansBoxHalf, ans3Y + ansBoxHalf});
         } else {
             return null;
@@ -181,6 +197,19 @@ public class FeatureDetector {
                     ", ansPosY=" + Arrays.toString(ansPosY) +
                     '}';
         }
+    }
+
+    public interface StatusListener {
+        void onFeatureDetectorUpdate(Step step);
+    }
+
+    public enum Step {
+        MEASURING_COMPONENTS,
+        CROPPING_BITMAPS,
+        OCR_QUESTION,
+        OCR_ANS1,
+        OCR_ANS2,
+        OCR_ANS3
     }
 
 }

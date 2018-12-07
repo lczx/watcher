@@ -18,14 +18,15 @@ import java.util.Arrays;
 
 public class QuizOverlayManager extends OverlayViewManager {
 
-    private static final int PROGRESS_MARGIN_BOTTOM_DP = 100;
+    private static final int PROGRESS_MARGIN_BOTTOM_DP = 40;
     private static final int RESULT_MARGIN_RIGHT_DP = 60;
 
-    private ProgressOverlay progressOverlay = null;
+    private final ProgressOverlay progressOverlay;
     private ResultDisplayOverlay[] resultOverlays = new ResultDisplayOverlay[3];
 
     public QuizOverlayManager(@NotNull Context context) {
         super(context);
+        progressOverlay = new ProgressOverlay(context);
     }
 
     @Override
@@ -36,23 +37,17 @@ public class QuizOverlayManager extends OverlayViewManager {
 
     void onTaskStart() {
         clearResults();
-
-        if (progressOverlay == null) {
-            progressOverlay = new ProgressOverlay(getContext());
-            getWindowManager().addView(progressOverlay.getViewport(), makeProgressLayoutParams());
-        }
+        getWindowManager().addView(progressOverlay.getViewport(), makeProgressLayoutParams());
         progressOverlay.setProgress(0, null);
     }
 
     void onProgressUpdate(int percentage, String description) {
-        if (progressOverlay != null)
-            progressOverlay.setProgress(percentage, description);
+        progressOverlay.setProgress(percentage, description);
     }
 
     void onResult(int[] values, int[] yCoords) {
         System.out.println(Arrays.toString(yCoords));
         getWindowManager().removeView(progressOverlay.getViewport());
-        progressOverlay = null;
 
         if (values == null) {
             Toast.makeText(getContext(), "No results have been found!", Toast.LENGTH_LONG).show();
@@ -75,7 +70,6 @@ public class QuizOverlayManager extends OverlayViewManager {
     @Override
     public void onProjectionStop() {
         getWindowManager().removeView(progressOverlay.getViewport());
-        progressOverlay = null;
         clearResults();
 
         super.onProjectionStop();
