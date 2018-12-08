@@ -1,6 +1,6 @@
 <p align="center"><img src="src/main/ic_launcher-web.png" width="200"/></p> 
 <h1 align="center">Watcher</h2>
-<h4 align="center"><i>A crippled screenshot utility for Android that can't even save the captured images</i></h4>
+<h4 align="center"><i>A very simple overlay and screen capture framework for Android</i></h4>
 
 <p align="center">
 <a href="https://github.com/lczx/watcher" alt="GitHub release"><img src="https://img.shields.io/github/release/lczx/watcher.svg" /></a>
@@ -8,8 +8,8 @@
 </p>
 
 **Watcher** shows an overlay on the screen that you can use to capture
-snapshots using the Android MediaProjection API, the images are cropped
-to the center square of the screen and kept in memory.
+snapshots using the Android MediaProjection API, operation modes can be
+implemented to manipulate the generated images.
 
 ### Why?
 
@@ -17,7 +17,7 @@ First of all, this is a way for myself to (try to) develop a proper,
 although useless, Android application; hopefully learning new things in the
 meantime.
 
-This was made for some people I know that play a game named *Ingress*,
+This was originally made for some people I know that play a game named *Ingress*,
 if you are frustrated by "Glyph Hacking" this may be for you.
 
 It is needless to say that this surely violates the game's EULA, in
@@ -28,9 +28,9 @@ so there is no way I can screenshot their things without root.
 
 ### Usage
 
-Enable the overlay and touch the pane over the status bar to start a
-capture session; now use the new fancy screen capture button to take
-screenshots.
+If the "Glyph Hacking" mode is selected, enable the overlay and touch 
+the pane over the status bar to start a capture session; now use the
+fancy screen capture button to take screenshots.
 
 Long-pressing the capture button switches to browse mode where the captured
 images are translucently overlaid at the same location they were taken.
@@ -43,12 +43,12 @@ long touching it opens the application.
 ### Contributing
 
 Despite this project's initial purpose, I am *very* interested to new ideas:
-need a more generic screenshot/video capture utility or something more suited for your needs? Fill in
-[an issue](https://github.com/lczx/watcher/issues/new) so we can arrange
-something; the same holds true if you find a bug,
+need a more generic screenshot/video capture utility or something more suited
+for your needs? Fill in [an issue](https://github.com/lczx/watcher/issues/new)
+so we can arrange something; the same holds true if you find a bug,
 [report it](https://github.com/lczx/watcher/issues/new)!
 
-If you like coding and are willing to help,
+If you like coding and want to develop a new operation mode for you to use,
 [pull requests](https://github.com/lczx/watcher/pulls) are always welcome.
 
 ### License
