@@ -44,6 +44,15 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    splits {
+        abi {
+            // https://android.jlelse.eu/controlling-apk-size-when-using-native-libraries-45c6c0e5b70a
+            enable true
+            reset()
+            include "arm64-v8a", "armeabi-v7a"
+            universalApk true
+        }
+    }
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
