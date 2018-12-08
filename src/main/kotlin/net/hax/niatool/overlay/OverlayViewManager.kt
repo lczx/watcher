@@ -2,7 +2,6 @@ package net.hax.niatool.overlay
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.support.v7.view.ContextThemeWrapper
 import android.view.Gravity
@@ -16,11 +15,11 @@ abstract class OverlayViewManager(protected val context: Context) {
 
     companion object {
         @JvmStatic
-        protected val LAYOUT_FLAGS_DEFAULT =
+        val LAYOUT_FLAGS_DEFAULT =
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
 
         @JvmStatic
-        protected val LAYOUT_FLAGS_FOCUSABLE =
+        val LAYOUT_FLAGS_FOCUSABLE =
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
 
         // WindowManager.LayoutParams - Types
@@ -44,7 +43,7 @@ abstract class OverlayViewManager(protected val context: Context) {
             gravity = Gravity.TOP or Gravity.CENTER  // This may look weird on Essential Phone :D
         }
         @JvmStatic
-        protected val LAYOUT_PARAMS_CONTROL_OVERLAY = WindowManager.LayoutParams().apply {
+        val LAYOUT_PARAMS_CONTROL_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
             x = 0

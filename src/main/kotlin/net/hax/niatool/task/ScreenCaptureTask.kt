@@ -20,7 +20,7 @@ abstract class ScreenCaptureTask<P, R> : AsyncTask<ImageReader, P, R>() {
                 image.width + rowPadding / plane.pixelStride, image.height, Bitmap.Config.ARGB_8888)
         capture.copyPixelsFromBuffer(plane.buffer)
 
-        val result = processCaptureBackground(image, capture) ?: capture
+        val result = processCaptureBackground(image, capture)
         if (result != capture) capture.recycle()
         image.close()
 
