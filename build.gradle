@@ -56,7 +56,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation 'com.rmtheis:tess-two:6.0.0'
+    implementation 'com.rmtheis:tess-two:9.0.0'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:cardview-v7:$supportLibVersion"
