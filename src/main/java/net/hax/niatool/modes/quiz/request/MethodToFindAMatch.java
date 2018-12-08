@@ -20,23 +20,20 @@ public abstract class MethodToFindAMatch {
     }
 
     /**
-     *
      * @return Torna la percentuale di probabilità (max=100) della correttezza delle risposta nello stesso ordine delle risposte date
      */
     public int[] find(String question, String[] answers) throws AnswerNotFoundException {
-        int result[];
         question = question.toLowerCase();
-        if (question.contains(" non ")) {
-            question = question.replace(" non ", " ");
-            result = compute(question, answers);
-            for (int i = 0; i < 3; i++) {
-                result[i] = 100 - result[i];
-            }
-        } else {
-            result = compute(question, answers);
+
+        if (!question.contains(" non ")) {
+            return compute(question, answers);
         }
 
-        return result;
+        int[] result = compute(question.replace(" non ", " "), answers);
+        for (int i = 0; i < 3; i++) {
+            result[i] = 100 - result[i];
+        }
+        return normalizeOccurrences(result);
     }
 
     public abstract int[] compute(String question, String[] answers) throws AnswerNotFoundException;
@@ -78,13 +75,13 @@ public abstract class MethodToFindAMatch {
         return occorrenze;
     }
 
-    public interface StatusListener {
-        void onSearchUpdate(Step step);
-    }
-
     public enum Step {
         FETCH_DOCUMENT,
         PROCESS_DOCUMENT
+    }
+
+    public interface StatusListener {
+        void onSearchUpdate(Step step);
     }
 
 }
