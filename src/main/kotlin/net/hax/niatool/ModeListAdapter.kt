@@ -29,7 +29,7 @@ class ModeListAdapter : RecyclerView.Adapter<ModeListAdapter.Holder>() {
         holder.layout.setOnClickListener {
             if (holder == selected) return@setOnClickListener
 
-            selected!!.layout.isSelected = false
+            selected?.layout?.isSelected = false
             it.isSelected = !it.isSelected
             selected = holder
 

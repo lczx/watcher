@@ -52,5 +52,8 @@
     <string name="mode_glyph_name">Glyph Hacking</string>
     <string name="mode_glyph_description">Cattura in successione l\'area centrale dello schermo;
         tenere premuto per visualizzare in rilievo sulla stessa zona, usare i pulsanti del volume per navigare.</string>
+    <string name="mode_quiz_name">Quiz Helper</string>
+    <string name="mode_quiz_description">Esegue OCR su una schermata di una domanda di "Live Quiz",
+        poi cerca per delle risposte su Internet e visualizza il numero di corrispondenze.</string>
 
 </resources>
