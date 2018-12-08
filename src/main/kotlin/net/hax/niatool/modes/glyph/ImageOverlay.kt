@@ -1,4 +1,4 @@
-package net.hax.niatool.overlay
+package net.hax.niatool.modes.glyph
 
 import android.content.Context
 import android.graphics.Bitmap

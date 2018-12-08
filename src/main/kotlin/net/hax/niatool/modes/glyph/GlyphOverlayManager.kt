@@ -9,9 +9,8 @@ import android.view.View
 import android.view.WindowManager
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.R
-import net.hax.niatool.overlay.ImageOverlay
-import net.hax.niatool.overlay.OverlayViewManager
 import net.hax.niatool.overlay.ControlPanelOverlay2
+import net.hax.niatool.overlay.OverlayViewManager
 
 class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
 
