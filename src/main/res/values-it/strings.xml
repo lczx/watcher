@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="overlay_service_name">Servizio Overlay</string>
+
     <string name="menu_settings">Impostazioni</string>
     <string name="settings_caption_theme">Tema overlay</string>
     <string name="settings_caption_animations">Usa animazioni</string>
