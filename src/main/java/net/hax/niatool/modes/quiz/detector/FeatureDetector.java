@@ -2,12 +2,14 @@ package net.hax.niatool.modes.quiz.detector;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.support.annotation.RawRes;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import net.hax.niatool.R;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Locale;
 
 
 public class FeatureDetector {
@@ -20,6 +22,8 @@ public class FeatureDetector {
     private static final int HEADER_HEIGHT_DP = 145;
     private static final int BORDER_QUESTION_DP = 30;
     private static final int BORDER_ANSWER_DP = 70;
+
+    private static final boolean DEBUG_DUMP_BITMAPS = false;
 
     private final TessBaseAPI tesseract;
     private StatusListener statusListener;
@@ -37,12 +41,8 @@ public class FeatureDetector {
     public Result processImage(Bitmap bitmap) {
         if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.MEASURING_COMPONENTS);
 
-        int borderQ = (int) (BORDER_QUESTION_DP * bitmap.getDensity() / 160f);
-        int width = bitmap.getWidth() - borderQ;
-        int height = bitmap.getHeight();
-
-        int[] verticalMiddleArray = new int[height];
-        bitmap.getPixels(verticalMiddleArray, 0, 1, width * 3 / 4, 0, 1, height);
+        int[] verticalMiddleArray = new int[bitmap.getHeight()];
+        bitmap.getPixels(verticalMiddleArray, 0, 1, bitmap.getWidth() * 3 / 4, 0, 1, bitmap.getHeight());
 
         int bottomBlueBox = 0;
         int answerBox = 0;
@@ -50,17 +50,16 @@ public class FeatureDetector {
         boolean changed1 = false;
         boolean changed2 = false;
         boolean correct = false;
-        int red;
-        for (int i = verticalMiddleArray.length - 1; i >= height / 2; i--) {
-            red = Integer.parseInt(Integer.toHexString(verticalMiddleArray[i]).substring(2, 4), 16);
+        for (int i = verticalMiddleArray.length - 1; i >= bitmap.getHeight() / 2; i--) {
+            int red = (verticalMiddleArray[i] & 0xFF0000) >> 16;
             if (red > WHITE_THRESHOLD && !changed1 && !changed2) {
-                bottomBlueBox = height - i - 1;
+                bottomBlueBox = bitmap.getHeight() - i - 1;
                 changed1 = true;
             } else if (red < WHITE_THRESHOLD && changed1 && !changed2) {
-                answerBox = height - bottomBlueBox - i - 1;
+                answerBox = bitmap.getHeight() - bottomBlueBox - i - 1;
                 changed2 = true;
             } else if (red > WHITE_THRESHOLD && changed1 && changed2) {
-                infraAnswerBox = height - answerBox - bottomBlueBox - i - 1;
+                infraAnswerBox = bitmap.getHeight() - answerBox - bottomBlueBox - i - 1;
                 changed1 = false;
             } else if (red < WHITE_THRESHOLD && !changed1 && changed2) {
                 correct = true;
@@ -71,18 +70,17 @@ public class FeatureDetector {
         if (correct) {
             if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.CROPPING_BITMAPS);
 
-            int headerHeight = (int) (HEADER_HEIGHT_DP * bitmap.getDensity() / 160f);
-
             int paddedAnswerBox = infraAnswerBox + answerBox;
-
-            int ans3Y = height - bottomBlueBox - answerBox;
+            int ans3Y = bitmap.getHeight() - bottomBlueBox - answerBox;
             int ans2Y = ans3Y - paddedAnswerBox;
             int ans1Y = ans3Y - 2 * paddedAnswerBox;
 
+            int headerHeight = (int) (HEADER_HEIGHT_DP * bitmap.getDensity() / 160f);
+            int questionBorder = (int) (BORDER_QUESTION_DP * bitmap.getDensity() / 160f);
             int questionHeight = ans3Y - 2 * paddedAnswerBox - headerHeight - 5;
             Bitmap bmpQuestion = Bitmap.createBitmap(bitmap,
-                    borderQ / 2, headerHeight,
-                    bitmap.getWidth() - borderQ, questionHeight);
+                    questionBorder / 2, headerHeight,
+                    bitmap.getWidth() - questionBorder, questionHeight);
 
             int ansBorder = (int) (BORDER_ANSWER_DP * bitmap.getDensity() / 160f);
             int ansWidth = bitmap.getWidth() - ansBorder;
@@ -91,15 +89,14 @@ public class FeatureDetector {
             Bitmap bmpAnswer2 = Bitmap.createBitmap(bitmap, ansBorder / 2, ans2Y, ansWidth, answerBox);
             Bitmap bmpAnswer3 = Bitmap.createBitmap(bitmap, ansBorder / 2, ans3Y, ansWidth, answerBox);
 
-            /*
-            saveBitmap(bmpQuestion, "q");
-            saveBitmap(bmpAnswer1, "a1");
-            saveBitmap(bmpAnswer2, "a2");
-            saveBitmap(bmpAnswer3, "a3");
-
-            Bitmap bmpQ = Bitmap.createBitmap(bitmap, width * 3 / 4, 0, 1, height);
-            saveBitmap(bmpQ, "q");
-            */
+            if (DEBUG_DUMP_BITMAPS) {
+                saveBitmap(bmpQuestion, "q");
+                saveBitmap(bmpAnswer1, "a1");
+                saveBitmap(bmpAnswer2, "a2");
+                saveBitmap(bmpAnswer3, "a3");
+                saveBitmap(Bitmap.createBitmap(bitmap,
+                        bitmap.getWidth() * 3 / 4, 0, 1, bitmap.getHeight()), "v");
+            }
 
             if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_QUESTION);
             String question = getOCRResult(bmpQuestion);
@@ -118,16 +115,17 @@ public class FeatureDetector {
         }
     }
 
-    /*void saveBitmap(Bitmap bmp, String suffix) {
-        String filename = String.format("/sdcard/bla-%s.png", suffix);
+    private void saveBitmap(Bitmap bmp, String suffix) {
+        File outFile = new File(Environment.getExternalStorageDirectory(),
+                String.format(Locale.ROOT, "dump%d_%s.png", System.currentTimeMillis(), suffix));
 
-        try (FileOutputStream out = new FileOutputStream(filename)) {
+        try (FileOutputStream out = new FileOutputStream(outFile)) {
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     public void freeResources() {
         tesseract.end();
@@ -166,6 +164,19 @@ public class FeatureDetector {
         }
     }
 
+    public enum Step {
+        MEASURING_COMPONENTS,
+        CROPPING_BITMAPS,
+        OCR_QUESTION,
+        OCR_ANS1,
+        OCR_ANS2,
+        OCR_ANS3
+    }
+
+    public interface StatusListener {
+        void onFeatureDetectorUpdate(Step step);
+    }
+
     public static class Result {
         private final String question;
         private final String[] answers;
@@ -197,19 +208,6 @@ public class FeatureDetector {
                     ", ansPosY=" + Arrays.toString(ansPosY) +
                     '}';
         }
-    }
-
-    public interface StatusListener {
-        void onFeatureDetectorUpdate(Step step);
-    }
-
-    public enum Step {
-        MEASURING_COMPONENTS,
-        CROPPING_BITMAPS,
-        OCR_QUESTION,
-        OCR_ANS1,
-        OCR_ANS2,
-        OCR_ANS3
     }
 
 }

@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.ProgressInfo, ReadAndSearchTask.ResultData>
         implements FeatureDetector.StatusListener, MethodToFindAMatch.StatusListener {
 
@@ -34,12 +36,16 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
             LOG.warn("Character recognition failed, shot was probably taken on the wrong screen");
             return null;
         }
+        LOG.debug("OCR Result: {}", ocrResult);
 
         try {
             Method1 m = new Method1();
             m.setStatusListener(this);
             int[] points = m.setNumResults(25).find(ocrResult.getQuestion(), ocrResult.getAnswers());
-            return new ResultData(points, ocrResult.getAnswerYCoordinates());
+
+            ResultData resultData = new ResultData(points, ocrResult.getAnswerYCoordinates());
+            LOG.debug("Search result: {}", resultData);
+            return resultData;
         } catch (AnswerNotFoundException e) {
             LOG.warn("No search results found");
             return null;
@@ -118,6 +124,14 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
         public ResultData(int[] values, int[] yCoords) {
             this.values = values;
             this.yCoords = yCoords;
+        }
+
+        @Override
+        public String toString() {
+            return "ResultData{" +
+                    "values=" + Arrays.toString(values) +
+                    ", yCoords=" + Arrays.toString(yCoords) +
+                    '}';
         }
     }
 
