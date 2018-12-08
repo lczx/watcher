@@ -10,6 +10,10 @@
     <color name="main_activity_color_etched">#777</color>
     <color name="main_activity_color_status_bar">#222</color>
 
+    <!-- Mode selector -->
+    <color name="mode_card_enabled">#257</color>
+    <color name="mode_card_default">#444</color>
+
     <!-- Overlay controller - Default theme -->
     <color name="overlay_ctrl_frame_default">#70000000</color>
     <color name="overlay_ctrl_icon_default">#44000000</color>

@@ -8,9 +8,9 @@ object ModeRegistry {
             "glyph" to GlyphHackMode()
     )
 
-    fun getModeModule(id: String): OperationMode? {
-        return modes[id]
-    }
+    fun getModeModule(id: String): OperationMode? = modes[id]
+
+    fun getModeNames(): Set<String> = modes.keys
 
     data class Info(val name: String, val description: String)
 

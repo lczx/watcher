@@ -80,6 +80,25 @@
 
         </android.support.v7.widget.CardView>
 
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="?android:textColorSecondary"
+                android:letterSpacing=".2"
+                android:textAlignment="center"
+                android:text="@string/section_modes_name"
+                />
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/mode_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:overScrollMode="never"
+                android:splitMotionEvents="false"/>
+
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

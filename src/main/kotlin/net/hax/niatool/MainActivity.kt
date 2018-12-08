@@ -15,8 +15,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SwitchCompat
-import android.support.v7.widget.Toolbar
+import android.support.v7.widget.*
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -63,6 +62,13 @@ class MainActivity : AppCompatActivity() {
             // Note: this gets invoked even when we toggle the switch programmatically,
             // but start/stopService never start or stop the service twice, so we are OK
             if (isChecked) attemptStartOverlay() else stopOverlay()
+        }
+
+        // Initialize modes list
+        with(findViewById(R.id.mode_list) as RecyclerView) {
+            layoutManager = LinearLayoutManager(context)
+            itemAnimator = DefaultItemAnimator()
+            adapter = ModeListAdapter()
         }
 
         // Version note & long-click force update
@@ -152,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startOverlay() {
         Log.d(TAG, "Starting overlay service")
-        startService(OverlayServiceUtil.createStartIntent(this, "glyph"))
+        startService(OverlayServiceUtil.createStartIntent(this, ApplicationSettings.currentMode))
     }
 
     private fun stopOverlay() {

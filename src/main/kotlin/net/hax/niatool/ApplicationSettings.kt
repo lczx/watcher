@@ -16,6 +16,9 @@ object ApplicationSettings {
     private val PREF_OVERLAY_THEME_KEY = "overlay_theme"
     private val PREF_OVERLAY_THEME_DEFAULT = "OverlayCtrl.Default"
 
+    private val PREF_CURRENT_MODE = "current_mode"
+    private val PREF_CURRENT_MODE_DEFAULT = "glyph"
+
     private val OVERLAY_THEME_IDS = intArrayOf(
             R.style.OverlayCtrl_Default,
             R.style.OverlayCtrl_Kahifrex,
@@ -35,6 +38,8 @@ object ApplicationSettings {
     val overlayThemeName: String
         get() = applicationContext.getString(OVERLAY_THEME_NAMES[overlayThemeIndex])
 
+    var currentMode: String = ""
+
     private lateinit var applicationContext: Context
     private lateinit var applicationPreferences: SharedPreferences
 
@@ -47,6 +52,8 @@ object ApplicationSettings {
 
         if (overlayThemeIndex == -1)
             throw NoSuchElementException("Developer is an oaf and forgot to add this theme to the index")
+
+        currentMode = applicationPreferences.getString(PREF_CURRENT_MODE, PREF_CURRENT_MODE_DEFAULT)
     }
 
     fun saveApplicationPreferences() {
@@ -54,6 +61,7 @@ object ApplicationSettings {
         prefEditor.putBoolean(PREF_USE_ANIMATIONS_KEY, animationsEnabled)
         prefEditor.putString(PREF_OVERLAY_THEME_KEY,
                 applicationContext.resources.getResourceEntryName(OVERLAY_THEME_IDS[overlayThemeIndex]))
+        prefEditor.putString(PREF_CURRENT_MODE, currentMode)
         prefEditor.apply()
         Log.i(TAG, "Application preferences saved to disk")
     }
