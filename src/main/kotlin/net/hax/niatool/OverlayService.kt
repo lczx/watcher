@@ -21,7 +21,6 @@ import android.util.Log
 import net.hax.niatool.modes.ModeRegistry
 import net.hax.niatool.modes.OperationMode
 import net.hax.niatool.overlay.OverlayViewManager
-import net.hax.niatool.task.ScreenCaptureTask
 
 // TODO: We may want to change this service to another type that may run on a different thread,
 // TODO:   so we must ensure that calls to UI components are safely handled on the UI thread.
@@ -145,7 +144,7 @@ class OverlayService : Service() {
             this.mediaProjection = mediaProjection
             // TODO: NOT ORIENTATION SAFE, we should reinitialize imageReader & co. on orientation change
             val screenSize = Point()
-            overlayManager!!.windowManager.defaultDisplay.getSize(screenSize) // getWindowManager() in Activity
+            overlayManager!!.windowManager.defaultDisplay.getRealSize(screenSize) // getWindowManager() in Activity
             imageReader = ImageReader.newInstance(screenSize.x, screenSize.y, PixelFormat.RGBA_8888, 2)
             virtualDisplay = mediaProjection.createVirtualDisplay("capture-overlay",
                     screenSize.x, screenSize.y, resources.displayMetrics.densityDpi,
