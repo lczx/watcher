@@ -3,7 +3,7 @@ package net.hax.niatool.overlay
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
-import android.support.v7.view.ContextThemeWrapper
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.WindowManager
 import android.widget.Toast
@@ -56,7 +56,7 @@ abstract class OverlayViewManager(protected val context: Context) {
         }
     }
 
-    val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val windowManager = WindowManagerWrapper(context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
     private var statusOverlay: StatusPanelOverlay? = null
     protected var controlOverlay: ControlPanelOverlay2? = null
 

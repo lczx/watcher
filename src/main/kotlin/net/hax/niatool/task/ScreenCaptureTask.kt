@@ -4,11 +4,21 @@ import android.graphics.Bitmap
 import android.media.Image
 import android.media.ImageReader
 import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
+import net.hax.niatool.overlay.OverlayViewManager
 
-abstract class ScreenCaptureTask<P, R> : AsyncTask<ImageReader, P, R>() {
+abstract class ScreenCaptureTask<P, R>(protected val overlayManager: OverlayViewManager) :
+        AsyncTask<ImageReader, P, R>() {
+
+    override fun onPreExecute() {
+        overlayManager.windowManager.temporaryHideViews()
+    }
 
     override fun doInBackground(vararg params: ImageReader?): R {
         val image = params[0]!!.acquireLatestImage()
+        Handler(Looper.getMainLooper()).post { overlayManager.windowManager.restoreViews() }
+
         // TODO verify that is safe to use image.width and height instead of windowManager.defaultDisplay.getSize
         // TODO NOT CHECKED FOR ORIENTATION SAFETY
 
@@ -25,7 +35,7 @@ abstract class ScreenCaptureTask<P, R> : AsyncTask<ImageReader, P, R>() {
         image.close()
 
         @Suppress("UNCHECKED_CAST") // It is a problem of the mode provider if this cast fails
-        return result as R
+        return result
     }
 
     /**

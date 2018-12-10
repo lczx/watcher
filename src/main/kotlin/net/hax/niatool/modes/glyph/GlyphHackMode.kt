@@ -20,7 +20,7 @@ class GlyphHackMode : OperationMode {
 
     override fun makeCaptureProcessTask(overlayManager: OverlayViewManager) = ResizeAndShowTask(overlayManager)
 
-    class ResizeAndShowTask(private val overlayManager: OverlayViewManager) : ScreenCaptureTask<Void, Bitmap>() {
+    class ResizeAndShowTask(overlayManager: OverlayViewManager) : ScreenCaptureTask<Void, Bitmap>(overlayManager) {
         override fun processCaptureBackground(image: Image, capture: Bitmap) =
                 Bitmap.createBitmap(capture, 0, (image.height - image.width) / 2, image.width, image.width)!!
 

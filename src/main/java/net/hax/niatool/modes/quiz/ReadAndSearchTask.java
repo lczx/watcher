@@ -22,6 +22,7 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
     private final QuizOverlayManager overlayManager;
 
     ReadAndSearchTask(OverlayViewManager overlayManager) {
+        super(overlayManager);
         this.overlayManager = (QuizOverlayManager) overlayManager;
     }
 
@@ -56,6 +57,7 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
     @Override
     protected void onPreExecute() {
         overlayManager.onTaskStart();
+        super.onPreExecute();
     }
 
     @Override
