@@ -18,13 +18,13 @@ public class Method0 extends MethodToFindAMatch {
     private static final Logger LOG = LoggerFactory.getLogger(Method0.class);
 
     @Override
-    public int[] compute(String question, String[] answers) throws AnswerNotFoundException {
+    public int[] compute(String question, String[] answers){
         int resultStats[] = new int[3];
         for (int i = 0; i < 3; i++) {
             resultStats[i] = countResultStatsFor(question, answers[i]);
         }
 
-        return normalizeOccurrences(resultStats);
+        return resultStats;
     }
 
     private int countResultStatsFor(String question, String answer) {
@@ -32,6 +32,7 @@ public class Method0 extends MethodToFindAMatch {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("q", question + " " + answer);
             Document doc = Jsoup.connect(makeUrl(parameters)).get();
+
             Element resultStats = doc.getElementById("resultStats");
 
             return Integer.parseInt(resultStats.ownText().replaceAll("[^0-9]", ""));

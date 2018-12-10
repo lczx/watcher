@@ -19,11 +19,7 @@ public class Method4 extends MethodToFindAMatch {
     private static final Logger LOG = LoggerFactory.getLogger(Method4.class);
 
     @Override
-    public int[] compute(String question, String[] answers) throws AnswerNotFoundException {
-        return normalizeOccurrences(countWordsInGoogleRequestForWikipedia(question, answers));
-    }
-
-    private int[] countWordsInGoogleRequestForWikipedia(String question, String answers[]) {
+    public int[] compute(String question, String[] answers) {
         int occorrenze[] = {0, 0, 0};
         try {
             Map<String, String> parameters = new HashMap<>();

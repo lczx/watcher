@@ -18,10 +18,6 @@ public class Method3 extends MethodToFindAMatch {
 
     @Override
     public int[] compute(String question, String[] answers) throws AnswerNotFoundException {
-        return normalizeOccurrences(countWordsInWikipediaPage(question, answers));
-    }
-
-    private int[] countWordsInWikipediaPage(String question, String[] answers) throws AnswerNotFoundException {
         int occorrenze[] = new int[3];
         try {
             Map<String, String> parameters = new HashMap<>();

@@ -27,11 +27,7 @@ public class Method1 extends MethodToFindAMatch {
     }
 
     @Override
-    public int[] compute(String question, String[] answers) throws AnswerNotFoundException {
-        return normalizeOccurrences(countWordsInGoogleRequest(question, answers));
-    }
-
-    private int[] countWordsInGoogleRequest(String question, String answers[]) {
+    public int[] compute(String question, String[] answers){
         int occorrenze[] = {0, 0, 0};
         try {
             if (statusListener != null) statusListener.onSearchUpdate(Step.FETCH_DOCUMENT);
