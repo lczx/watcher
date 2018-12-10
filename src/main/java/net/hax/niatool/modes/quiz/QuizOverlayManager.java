@@ -67,7 +67,7 @@ public class QuizOverlayManager extends OverlayViewManager {
                 getWindowManager().removeView(resultOverlays[i].getViewport());
             }
 
-            resultOverlays[i].setText(String.valueOf(values[i]) + '%');
+            resultOverlays[i].setText(String.valueOf(values[i]));
             getWindowManager().addView(resultOverlays[i].getViewport(),
                     makeResultLayoutParams(yCoords[i], resultOverlays[i]));
         }
