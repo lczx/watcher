@@ -3,6 +3,7 @@ package net.hax.niatool.modes.glyph;
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
+import android.graphics.Point
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -16,15 +17,6 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
 
     companion object {
         private const val TAG = "GlyphOverlayManager"
-
-        private val LAYOUT_PARAMS_IMAGE_OVERLAY = WindowManager.LayoutParams().apply {
-            width = WindowManager.LayoutParams.MATCH_PARENT
-            height = WindowManager.LayoutParams.MATCH_PARENT
-            type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
-            flags = OverlayViewManager.LAYOUT_FLAGS_DEFAULT
-            format = PixelFormat.TRANSLUCENT
-            gravity = Gravity.CENTER
-        }
     }
 
     private var imageOverlay: ImageOverlay? = null
@@ -38,7 +30,7 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
     override fun onProjectionStart() {
         super.onProjectionStart()
         imageOverlay = ImageOverlay(context)
-        windowManager.addView(imageOverlay!!.viewport, LAYOUT_PARAMS_IMAGE_OVERLAY)
+        windowManager.addView(imageOverlay!!.viewport, makeImageOverlayParams())
     }
 
     override fun onProjectionStop() {
@@ -78,6 +70,19 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         if (imageOverlay?.viewport?.visibility != View.VISIBLE)
             Log.w(TAG, "Flow warning: should not be possible to browse if control & image overlays are hidden")
         imageOverlay?.nextImage()
+    }
+
+    private fun makeImageOverlayParams() = WindowManager.LayoutParams().apply {
+        val screenSize = Point()
+        windowManager.defaultDisplay.getRealSize(screenSize)
+
+        y = (screenSize.y * GlyphHackMode.CAPTURE_MULT_Y_START).toInt()
+        width = WindowManager.LayoutParams.MATCH_PARENT
+        height = (screenSize.y * GlyphHackMode.CAPTURE_MULT_Y_HEIGHT).toInt()
+        type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
+        flags = OverlayViewManager.LAYOUT_FLAGS_DEFAULT or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS // <- not pushed by software nav buttons
+        format = PixelFormat.TRANSLUCENT
+        gravity = Gravity.TOP or Gravity.CENTER
     }
 
 }

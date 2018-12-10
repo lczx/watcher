@@ -12,6 +12,11 @@ import net.hax.niatool.task.ScreenCaptureTask
 
 class GlyphHackMode : OperationMode {
 
+    companion object {
+        const val CAPTURE_MULT_Y_START = .3
+        const val CAPTURE_MULT_Y_HEIGHT = .65
+    }
+
     override fun getModeMetadata(res: Resources) = ModeRegistry.Info(
             name = res.getString(R.string.mode_glyph_name),
             description = res.getString(R.string.mode_glyph_description))
@@ -22,7 +27,9 @@ class GlyphHackMode : OperationMode {
 
     class ResizeAndShowTask(overlayManager: OverlayViewManager) : ScreenCaptureTask<Void, Bitmap>(overlayManager) {
         override fun processCaptureBackground(image: Image, capture: Bitmap) =
-                Bitmap.createBitmap(capture, 0, (image.height - image.width) / 2, image.width, image.width)!!
+                Bitmap.createBitmap(capture,
+                        0, (image.height * CAPTURE_MULT_Y_START).toInt(),
+                        image.width, (image.height * CAPTURE_MULT_Y_HEIGHT).toInt())!!
 
         override fun onPostExecute(result: Bitmap) {
             (overlayManager as GlyphOverlayManager).addImage(result)
