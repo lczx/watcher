@@ -20,23 +20,23 @@ public abstract class MethodToFindAMatch {
     }
 
     /**
-     * @return Torna la percentuale di probabilità (max=100) della correttezza delle risposta nello stesso ordine delle risposte date
+     * @return Torna il numero assoluto delle occorrenze trovate delle risposte nello stesso ordine delle risposte date
      */
     public int[] find(String question, String[] answers) throws AnswerNotFoundException {
         question = question.toLowerCase();
 
         if (!question.contains(" non ")) {
-            return compute(question, answers);
+            return lookForZeroAnswer(compute(question, answers));
         }
 
         int[] result = compute(question.replace(" non ", " "), answers);
         for (int i = 0; i < 3; i++) {
             result[i] = 100 - result[i];
         }
-        return normalizeOccurrences(result);
+        return invertOccurrences(result);
     }
 
-    public abstract int[] compute(String question, String[] answers) throws AnswerNotFoundException;
+    public abstract int[] compute(String question, String[] answers) throws AnswerNotFoundException ;
 
     /**
      * @param parameters Inserire una mappa con key pari al parametro da ricercare su google ( "q" per il testo da cercare,  "btnI" per mi sento fortunato)
@@ -59,7 +59,7 @@ public abstract class MethodToFindAMatch {
         return "";
     }
 
-    protected int[] normalizeOccurrences(int[] occorrenze) throws AnswerNotFoundException {
+    private int[] invertOccurrences(int[] occorrenze) throws AnswerNotFoundException {
         int sum = 0;
         for (int occorrenza : occorrenze) {
             sum = sum + occorrenza;
@@ -69,9 +69,20 @@ public abstract class MethodToFindAMatch {
         }
 
         for (int i = 0; i < 3; i++) {
-            occorrenze[i] = occorrenze[i] * 100 / sum;
+            occorrenze[i] = sum-occorrenze[i] ;
         }
 
+        return occorrenze;
+    }
+
+    private int[] lookForZeroAnswer(int[] occorrenze)throws AnswerNotFoundException {
+        int sum = 0;
+        for (int occorrenza : occorrenze) {
+            sum = sum + occorrenza;
+        }
+        if (sum == 0) {
+            throw new AnswerNotFoundException();
+        }
         return occorrenze;
     }
 

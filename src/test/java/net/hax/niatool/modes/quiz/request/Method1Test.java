@@ -21,7 +21,7 @@ public class Method1Test {
         MethodToFindAMatch askToGod = new Method1();
 
         result = askToGod.find(question, answers);
-        
+
         assertThat(result[2] > result[0], is(true));
         assertThat(result[2] > result[1], is(true));
     }
