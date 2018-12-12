@@ -40,6 +40,7 @@ public class Method1 extends MethodToFindAMatch {
             Document doc = Jsoup.connect(makeUrl(parameters)).get();
             if (statusListener != null) statusListener.onSearchUpdate(Step.PROCESS_DOCUMENT);
             Elements risultati = doc.getElementsByClass("g");
+            Elements risultatoInEvidenza = doc.getElementsByClass("rl_container");
 
             UselessWordRemover screma = new UselessWordRemover();
             for(int i=0 ; i<3; i++){
@@ -52,31 +53,43 @@ public class Method1 extends MethodToFindAMatch {
             wordsA1.add(answers[1]);
             wordsA2.add(answers[2]);
 
+            for (Element risultato : risultatoInEvidenza) {
+                searchInOneResultFor(occorrenze, wordsA0, wordsA1, wordsA2, risultato);
+            }
+
+            for(int i =0; i<3; i++){
+                occorrenze[i]=occorrenze[i]*100;
+            }
+
             for (Element risultato : risultati) {
-                final String risToLowerCase = risultato.text().toLowerCase();
-
-                for (String wordA0 : wordsA0) {
-                    if (risToLowerCase.contains(wordA0)) {
-                        occorrenze[0] += risToLowerCase.split(wordA0).length - 1;
-                    }
-                }
-
-                for (String wordA1 : wordsA1) {
-                    if (risToLowerCase.contains(wordA1)) {
-                        occorrenze[1] += risToLowerCase.split(wordA1).length - 1;
-                    }
-                }
-
-                for (String wordA2 : wordsA2) {
-                    if (risToLowerCase.contains(wordA2)) {
-                        occorrenze[2] += risToLowerCase.split(wordA2).length - 1;
-                    }
-                }
+                searchInOneResultFor(occorrenze, wordsA0, wordsA1, wordsA2, risultato);
             }
         } catch (IOException ex) {
             LOG.error("I/O exception while fetching document", ex);
         }
         return occorrenze;
+    }
+
+    private void searchInOneResultFor(int[] occorrenze, ArrayList<String> wordsA0, ArrayList<String> wordsA1, ArrayList<String> wordsA2, Element risultato) {
+        final String risToLowerCase = risultato.text().toLowerCase();
+
+        for (String wordA0 : wordsA0) {
+            if (risToLowerCase.contains(wordA0)) {
+                occorrenze[0] += risToLowerCase.split(wordA0).length - 1;
+            }
+        }
+
+        for (String wordA1 : wordsA1) {
+            if (risToLowerCase.contains(wordA1)) {
+                occorrenze[1] += risToLowerCase.split(wordA1).length - 1;
+            }
+        }
+
+        for (String wordA2 : wordsA2) {
+            if (risToLowerCase.contains(wordA2)) {
+                occorrenze[2] += risToLowerCase.split(wordA2).length - 1;
+            }
+        }
     }
 
 }
