@@ -16,6 +16,7 @@ abstract class ScreenCaptureTask<P, R>(protected val overlayManager: OverlayView
     }
 
     override fun doInBackground(vararg params: ImageReader?): R {
+        Thread.sleep(50)
         val image = params[0]!!.acquireLatestImage()
         Handler(Looper.getMainLooper()).post { overlayManager.windowManager.restoreViews() }
 
