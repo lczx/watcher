@@ -11,7 +11,7 @@ import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.calculateControlToastYOffset
 
-abstract class OverlayViewManager(protected val context: Context) {
+abstract class OverlayViewManager(val context: Context) {
 
     companion object {
         @JvmStatic
