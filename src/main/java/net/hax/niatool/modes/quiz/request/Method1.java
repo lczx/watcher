@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,14 +38,19 @@ public class Method1 extends MethodToFindAMatch {
             parameters.put("q", question);
             parameters.put("num", Integer.toString(numResults));
             Document doc = Jsoup.connect(makeUrl(parameters)).get();
-
             if (statusListener != null) statusListener.onSearchUpdate(Step.PROCESS_DOCUMENT);
             Elements risultati = doc.getElementsByClass("g");
 
             UselessWordRemover screma = new UselessWordRemover();
-            String wordsA0[] = screma.lookIn(answers[0]).split(" ");
-            String wordsA1[] = screma.lookIn(answers[1]).split(" ");
-            String wordsA2[] = screma.lookIn(answers[2]).split(" ");
+            for(int i=0 ; i<3; i++){
+                answers[i]=screma.lookIn(answers[i]);
+            }
+            ArrayList<String> wordsA0 = new ArrayList<>(Arrays.asList(answers[0].split(" ")));
+            ArrayList<String> wordsA1 = new ArrayList<>(Arrays.asList(answers[1].split(" ")));
+            ArrayList<String> wordsA2 = new ArrayList<>(Arrays.asList(answers[2].split(" ")));
+            wordsA0.add(answers[0]);
+            wordsA1.add(answers[1]);
+            wordsA2.add(answers[2]);
 
             for (Element risultato : risultati) {
                 final String risToLowerCase = risultato.text().toLowerCase();
