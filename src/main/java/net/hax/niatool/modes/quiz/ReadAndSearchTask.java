@@ -6,6 +6,7 @@ import net.hax.niatool.modes.quiz.detector.FeatureDetector;
 import net.hax.niatool.modes.quiz.request.AnswerNotFoundException;
 import net.hax.niatool.modes.quiz.request.Method1;
 import net.hax.niatool.modes.quiz.request.MethodToFindAMatch;
+import net.hax.niatool.modes.quiz.request.SaveHtmlInFile;
 import net.hax.niatool.overlay.OverlayViewManager;
 import net.hax.niatool.task.ScreenCaptureTask;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
     private static final Logger LOG = LoggerFactory.getLogger(ReadAndSearchTask.class);
 
     private final QuizOverlayManager overlayManager;
+    private SaveHtmlInFile saver;
 
     ReadAndSearchTask(OverlayViewManager overlayManager) {
         super(overlayManager);
@@ -28,6 +30,7 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
 
     @Override
     public ResultData processCaptureBackground(@NotNull Image image, @NotNull Bitmap capture) {
+        saver= new SaveHtmlInFile(overlayManager.getContext());
         publishProgress(new ProgressInfo(0, "Initializing"));
         FeatureDetector detector = overlayManager.getFeatureDetector();
         detector.setStatusListener(this);
@@ -40,7 +43,7 @@ public class ReadAndSearchTask extends ScreenCaptureTask<ReadAndSearchTask.Progr
         LOG.debug("OCR Result: {}", ocrResult);
 
         try {
-            Method1 m = new Method1();
+            Method1 m = new Method1(saver);
             m.setStatusListener(this);
             int[] points = m.setNumResults(25).find(ocrResult.getQuestion(), ocrResult.getAnswers());
 

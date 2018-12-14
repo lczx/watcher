@@ -20,8 +20,14 @@ import java.util.Map;
 public class Method1 extends MethodToFindAMatch {
 
     private static final Logger LOG = LoggerFactory.getLogger(Method1.class);
+    private final SaveHtmlInFile saver;
 
     private int numResults = 10;
+
+    public Method1(SaveHtmlInFile saver) {
+        super();
+        this.saver=saver;
+    }
 
     public Method1 setNumResults(int numResults) {
         this.numResults = numResults;
@@ -42,6 +48,7 @@ public class Method1 extends MethodToFindAMatch {
             Elements risultati = doc.getElementsByClass("g");
             Elements risultatoInEvidenza = doc.getElementsByClass("rl_container");
 
+            saver.save(doc.outerHtml());
             UselessWordRemover screma = new UselessWordRemover();
             for(int i=0 ; i<3; i++){
                 answers[i]=screma.lookIn(answers[i]);
