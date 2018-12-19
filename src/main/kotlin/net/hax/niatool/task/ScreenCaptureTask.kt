@@ -16,7 +16,7 @@ abstract class ScreenCaptureTask<P, R>(protected val overlayManager: OverlayView
     }
 
     override fun doInBackground(vararg params: ImageReader?): R {
-        Thread.sleep(50)
+        Thread.sleep(100)
         val image = params[0]!!.acquireLatestImage()
         Handler(Looper.getMainLooper()).post { overlayManager.windowManager.restoreViews() }
 
@@ -35,7 +35,7 @@ abstract class ScreenCaptureTask<P, R>(protected val overlayManager: OverlayView
         if (result != capture) capture.recycle()
         image.close()
 
-        @Suppress("UNCHECKED_CAST") // It is a problem of the mode provider if this cast fails
+        @Suppress("UNCHECKED_CAST")
         return result
     }
 
