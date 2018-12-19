@@ -1,5 +1,6 @@
 package net.hax.niatool.modes.quiz.request;
 
+import net.hax.niatool.modes.quiz.ReportGenerator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,13 +21,13 @@ import java.util.Map;
 public class Method1 extends MethodToFindAMatch {
 
     private static final Logger LOG = LoggerFactory.getLogger(Method1.class);
-    private final SaveHtmlInFile saver;
+    private final ReportGenerator reportGen;
 
     private int numResults = 10;
 
-    public Method1(SaveHtmlInFile saver) {
+    public Method1(ReportGenerator reportGen) {
         super();
-        this.saver=saver;
+        this.reportGen = reportGen;
     }
 
     public Method1 setNumResults(int numResults) {
@@ -35,7 +36,7 @@ public class Method1 extends MethodToFindAMatch {
     }
 
     @Override
-    public int[] compute(String question, String[] answers){
+    public int[] compute(String question, String[] answers) {
         int occorrenze[] = {0, 0, 0};
         try {
             if (statusListener != null) statusListener.onSearchUpdate(Step.FETCH_DOCUMENT);
@@ -48,10 +49,10 @@ public class Method1 extends MethodToFindAMatch {
             Elements risultati = doc.getElementsByClass("g");
             Elements risultatoInEvidenza = doc.getElementsByClass("rl_container");
 
-            saver.save(doc.outerHtml());
+            reportGen.putText("scraped.html", doc.outerHtml());
             UselessWordRemover screma = new UselessWordRemover();
-            for(int i=0 ; i<3; i++){
-                answers[i]=screma.lookIn(answers[i]);
+            for (int i = 0; i < 3; i++) {
+                answers[i] = screma.lookIn(answers[i]);
             }
             ArrayList<String> wordsA0 = new ArrayList<>(Arrays.asList(answers[0].split(" ")));
             ArrayList<String> wordsA1 = new ArrayList<>(Arrays.asList(answers[1].split(" ")));
@@ -64,13 +65,16 @@ public class Method1 extends MethodToFindAMatch {
                 searchInOneResultFor(occorrenze, wordsA0, wordsA1, wordsA2, risultato);
             }
 
-            for(int i =0; i<3; i++){
-                occorrenze[i]=occorrenze[i]*100;
+            for (int i = 0; i < 3; i++) {
+                occorrenze[i] = occorrenze[i] * 100;
             }
 
             for (Element risultato : risultati) {
                 searchInOneResultFor(occorrenze, wordsA0, wordsA1, wordsA2, risultato);
             }
+
+            reportGen.putText("search_results.txt", String.format(
+                    "occorrenze:  %s\r\n", Arrays.toString(occorrenze)));
         } catch (IOException ex) {
             LOG.error("I/O exception while fetching document", ex);
         }

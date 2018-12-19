@@ -2,14 +2,13 @@ package net.hax.niatool.modes.quiz.detector;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.support.annotation.RawRes;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import net.hax.niatool.R;
+import net.hax.niatool.modes.quiz.ReportGenerator;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Locale;
 
 
 public class FeatureDetector {
@@ -22,8 +21,6 @@ public class FeatureDetector {
     private static final int HEADER_HEIGHT_DP = 145;
     private static final int BORDER_QUESTION_DP = 30;
     private static final int BORDER_ANSWER_DP = 70;
-
-    private static final boolean DEBUG_DUMP_BITMAPS = false;
 
     private final TessBaseAPI tesseract;
     private StatusListener statusListener;
@@ -38,7 +35,9 @@ public class FeatureDetector {
         this.statusListener = statusListener;
     }
 
-    public Result processImage(Bitmap bitmap) {
+    public Result processImage(Bitmap bitmap, ReportGenerator reportGen) {
+        if (reportGen != null) reportGen.putImage("img_capture.png", bitmap);
+
         if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.MEASURING_COMPONENTS);
 
         int[] verticalMiddleArray = new int[bitmap.getHeight()];
@@ -89,15 +88,6 @@ public class FeatureDetector {
             Bitmap bmpAnswer2 = Bitmap.createBitmap(bitmap, ansBorder / 2, ans2Y, ansWidth, answerBox);
             Bitmap bmpAnswer3 = Bitmap.createBitmap(bitmap, ansBorder / 2, ans3Y, ansWidth, answerBox);
 
-            if (DEBUG_DUMP_BITMAPS) {
-                saveBitmap(bmpQuestion, "q");
-                saveBitmap(bmpAnswer1, "a1");
-                saveBitmap(bmpAnswer2, "a2");
-                saveBitmap(bmpAnswer3, "a3");
-                saveBitmap(Bitmap.createBitmap(bitmap,
-                        bitmap.getWidth() * 3 / 4, 0, 1, bitmap.getHeight()), "v");
-            }
-
             if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_QUESTION);
             String question = getOCRResult(bmpQuestion);
             if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_ANS1);
@@ -107,23 +97,20 @@ public class FeatureDetector {
             if (statusListener != null) statusListener.onFeatureDetectorUpdate(Step.OCR_ANS3);
             String answer3 = getOCRResult(bmpAnswer3);
 
+            if (reportGen != null) {
+                reportGen.putImage("img_question.png", bmpQuestion);
+                reportGen.putImage("img_answer1.png", bmpAnswer1);
+                reportGen.putImage("img_answer2.png", bmpAnswer2);
+                reportGen.putImage("img_answer3.png", bmpAnswer3);
+                reportGen.putText("ocr_results.txt", String.format(
+                        "Q:  %s\r\nA1: %s\r\nA2: %s\r\nA3: %s\r\n", question, answer1, answer2, answer3));
+            }
+
             int ansBoxHalf = answerBox / 2;
             return new Result(question, new String[]{answer1, answer2, answer3},
                     new int[]{ans1Y + ansBoxHalf, ans2Y + ansBoxHalf, ans3Y + ansBoxHalf});
         } else {
             return null;
-        }
-    }
-
-    private void saveBitmap(Bitmap bmp, String suffix) {
-        File outFile = new File(Environment.getExternalStorageDirectory(),
-                String.format(Locale.ROOT, "dump%d_%s.png", System.currentTimeMillis(), suffix));
-
-        try (FileOutputStream out = new FileOutputStream(outFile)) {
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
