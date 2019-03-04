@@ -1,6 +1,6 @@
 buildscript {
     ext.kotlinVersion = '1.3.10'
-    ext.supportLibVersion = '25.4.0'
+    ext.supportLibVersion = '26.1.0'
     repositories {
         jcenter()
         google()
@@ -21,12 +21,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId 'net.hax.niatool'
         minSdkVersion 21        // Lollipop 5.0
-        targetSdkVersion 25     // Nougat 7.1
+        targetSdkVersion 26     // Nougat 7.1
         versionCode gitVersion.code
         versionName gitVersion.name
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
