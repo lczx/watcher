@@ -2,6 +2,7 @@ package net.hax.niatool.overlay
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.os.Build
 import android.view.ContextThemeWrapper
@@ -11,6 +12,7 @@ import android.widget.Toast
 import net.hax.niatool.ApplicationSettings
 import net.hax.niatool.OverlayServiceUtil
 import net.hax.niatool.calculateControlToastYOffset
+import net.hax.niatool.obtainStatusBarHeight
 
 abstract class OverlayViewManager(val context: Context) {
 
@@ -38,6 +40,9 @@ abstract class OverlayViewManager(val context: Context) {
         private val LAYOUT_PARAMS_STATUS_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
+
+            // TODO: Temporary workaround for status overlay not clickable on Oreo
+            y = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) obtainStatusBarHeight(Resources.getSystem()) else 0
             type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
             flags = LAYOUT_FLAGS_DEFAULT
