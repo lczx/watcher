@@ -1,8 +1,6 @@
 package net.hax.niatool
 
-import android.app.Activity
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
@@ -12,6 +10,7 @@ import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
@@ -38,6 +37,8 @@ class OverlayService : Service() {
         const val ACTION_STOP = "stop"
         const val EXTRA_MODE_ID = "mode_id"
 
+        const val NOTIFICATION_CHANNEL_ID = "watcher_chan"
+
         private var instance: OverlayService? = null
         val handler = MessageHandler()
     }
@@ -55,7 +56,14 @@ class OverlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(1339, NotificationCompat.Builder(baseContext)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val chan = NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    getString(R.string.app_name), NotificationManager.IMPORTANCE_NONE)
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(chan)
+        }
+
+        startForeground(1339, NotificationCompat.Builder(baseContext, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(resources.getString(R.string.notification_title))
                 .setContentText(resources.getStringArray(R.array.notification_text_random)
                         .let { it[(System.nanoTime() % it.size).toInt()] })
