@@ -3,6 +3,7 @@ package net.hax.niatool.overlay
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.Build
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.WindowManager
@@ -37,7 +38,8 @@ abstract class OverlayViewManager(val context: Context) {
         private val LAYOUT_PARAMS_STATUS_OVERLAY = WindowManager.LayoutParams().apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = WindowManager.LayoutParams.WRAP_CONTENT
-            type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
+            type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
             flags = LAYOUT_FLAGS_DEFAULT
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.CENTER  // This may look weird on Essential Phone :D
@@ -48,7 +50,8 @@ abstract class OverlayViewManager(val context: Context) {
             height = WindowManager.LayoutParams.WRAP_CONTENT
             x = 0
             y = 200
-            type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
+            type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
             flags = LAYOUT_FLAGS_DEFAULT // Switches to LAYOUT_FLAGS_FOCUSABLE on mode change
             format = PixelFormat.TRANSLUCENT
             @SuppressLint("RtlHardcoded")

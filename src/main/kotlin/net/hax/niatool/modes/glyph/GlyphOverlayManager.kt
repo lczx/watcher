@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.graphics.Point
+import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -79,7 +80,8 @@ class GlyphOverlayManager(context: Context) : OverlayViewManager(context) {
         y = (screenSize.y * GlyphHackMode.CAPTURE_MULT_Y_START).toInt()
         width = WindowManager.LayoutParams.MATCH_PARENT
         height = (screenSize.y * GlyphHackMode.CAPTURE_MULT_Y_HEIGHT).toInt()
-        type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
+        type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
         flags = OverlayViewManager.LAYOUT_FLAGS_DEFAULT or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS // <- not pushed by software nav buttons
         format = PixelFormat.TRANSLUCENT
         gravity = Gravity.TOP or Gravity.CENTER

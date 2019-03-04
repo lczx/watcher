@@ -3,6 +3,7 @@ package net.hax.niatool.modes.quiz;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.view.GravityCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -108,7 +109,8 @@ public class QuizOverlayManager extends OverlayViewManager {
 
         WindowManager.LayoutParams p = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, -1, marginBottom,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, // Type
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, // Type
                 OverlayViewManager.getLAYOUT_FLAGS_DEFAULT(), // Flags
                 PixelFormat.TRANSLUCENT); // Format
         p.gravity = Gravity.BOTTOM;
@@ -126,7 +128,8 @@ public class QuizOverlayManager extends OverlayViewManager {
         WindowManager.LayoutParams p = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
                 marginRight, y - resultOverlay.getViewport().getMeasuredHeight() / 2,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, // Type
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, // Type
                 OverlayViewManager.getLAYOUT_FLAGS_DEFAULT(), // Flags
                 PixelFormat.TRANSLUCENT); // Format
         p.gravity = Gravity.TOP | GravityCompat.END;
