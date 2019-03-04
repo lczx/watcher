@@ -2,6 +2,7 @@ package net.hax.niatool.modes.glyph
 
 import android.view.KeyEvent
 import android.view.View
+import android.widget.ImageButton
 import net.hax.niatool.R
 import net.hax.niatool.overlay.ControlPanelOverlay2
 import net.hax.niatool.widget.DispatcherLayout
@@ -10,10 +11,10 @@ class ControlBrowseScene(private val onBrowseBackCommand: () -> Unit, private va
         ControlPanelOverlay2.Scene(R.layout.overlay_ctrl_browse) {
 
     override fun onCreateView(view: View, controller: ControlPanelOverlay2) {
-        with(view.findViewById(R.id.button_back)) {
+        with(view.findViewById<ImageButton>(R.id.button_back)) {
             setOnClickListener { onBrowseBackCommand() }
         }
-        with(view.findViewById(R.id.button_forward)) {
+        with(view.findViewById<ImageButton>(R.id.button_forward)) {
             setOnClickListener { onBrowseForwardCommand() }
             setOnLongClickListener {
                 controller.switchScene(ControlCaptureScene::class.java); true

@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class UpdateListener : UpdateManager.EventListener {
         override fun onUpdateAvailable(updateManager: UpdateManager, updateData: UpdateData, cached: Boolean, forced: Boolean) {
-            val newVersionChip = findViewById(R.id.version_new)
+            val newVersionChip = findViewById<TextView>(R.id.version_new)
             newVersionChip.visibility = View.VISIBLE
             newVersionChip.setOnClickListener {
                 val alert = AlertDialog.Builder(this@MainActivity).setTitle(R.string.dialog_update_title)

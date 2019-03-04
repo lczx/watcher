@@ -35,7 +35,6 @@ abstract class ScreenCaptureTask<P, R>(protected val overlayManager: OverlayView
         if (result != capture) capture.recycle()
         image.close()
 
-        @Suppress("UNCHECKED_CAST")
         return result
     }
 
