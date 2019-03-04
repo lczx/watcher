@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 
         // The user returned from the system settings...
         if (requestCode == REQUEST_CODE_PERM_SYSTEM_ALERT) {
-            if (Settings.canDrawOverlays(this)) // ...and gave us the permission to start the overlay
+            if (isOverlayEnabled(this)) // ...and gave us the permission to start the overlay
                 startOverlay()
             else // ...but did not gave us the permission, uncheck the switch
                 mServiceToggleSwitch.isChecked = false
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun attemptStartOverlay() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isOverlayEnabled(this)) {
             // If we are on Marshmallow, we need to ask for the permission... and listen in #onActivityResult()
             val acceptAction = DialogInterface.OnClickListener { _, _ ->
                 startActivityForResult(
